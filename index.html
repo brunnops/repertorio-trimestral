@@ -62,11 +62,14 @@
     const corpoTabela = tabela.querySelector("tbody");
     const searchButton = document.getElementById("searchButton");
 
-    // Novo link baseado na nova planilha (com ID correto)
     const url = "https://opensheet.elk.sh/15GBCT0HKO5qUloXg-LPR4gRd4JpDQpf_qxHW5Ob4CnY/REPERTORIO";
 
+    function normalize(str) {
+      return str.normalize("NFD").replace(/\p{Diacritic}/gu, "").toLowerCase();
+    }
+
     function buscarMusica() {
-      const termo = input.value.trim().toLowerCase();
+      const termo = normalize(input.value.trim());
       if (termo === "") return;
       corpoTabela.innerHTML = "";
 
@@ -76,9 +79,10 @@
           return res.json();
         })
         .then(musicas => {
-          const resultado = musicas.filter(item =>
-            item["Música"] && item["Música"].toLowerCase().includes(termo)
-          );
+          const resultado = musicas.filter(item => {
+            if (!item["Música"]) return false;
+            return normalize(item["Música"]).includes(termo);
+          });
 
           if (resultado.length > 0) {
             resultado.forEach(item => {
