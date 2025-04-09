@@ -1,18 +1,137 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Repertório Trimestral</title>
-  <link rel="stylesheet" href="style.css" />
-  <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  <meta charset="UTF-8">
+  <title>Busca de Repertório</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      padding: 2rem;
+      background-color: #f9f9f9;
+    }
+    h1 {
+      text-align: center;
+    }
+    .search-container {
+      text-align: center;
+      margin-bottom: 2rem;
+    }
+    input[type="text"] {
+      padding: 10px;
+      width: 300px;
+      font-size: 1rem;
+    }
+    button {
+      padding: 10px 20px;
+      font-size: 1rem;
+      margin-left: 10px;
+      cursor: pointer;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 2rem;
+    }
+    th, td {
+      border: 1px solid #ccc;
+      padding: 10px;
+      text-align: left;
+    }
+    th {
+      background-color: #f0f0f0;
+    }
+    .no-results {
+      text-align: center;
+      margin-top: 1rem;
+      color: red;
+    }
+  </style>
 </head>
 <body>
 
-  <h1>Repertório Trimestral (Abril – Junho)</h1>
-  <input type="text" id="searchInput" placeholder="Busque por música, cantor, ritmo, etc..."/>
-  <div id="results"></div>
+  <h1>Busca de Repertório Trimestral</h1>
 
-  <script src="script.js"></script>
+  <div class="search-container">
+    <input type="text" id="searchInput" placeholder="Digite o nome da música">
+    <button onclick="buscarMusica()">Pesquisar</button>
+  </div>
+
+  <div id="resultado"></div>
+
+  <script>
+    const url = "https://spreadsheets.google.com/feeds/list/2PACX-1vT3nfCybgcT4p5fAFEV_YRn88r9R-bxatOi96UqXvI6CVb_QRc1hoVFz6YXhlafiX0lfZgTR4suVA93/1/public/values?alt=json";
+
+    let dadosMusicas = [];
+
+    fetch(url)
+      .then(response => response.json())
+      .then(data => {
+        const entries = data.feed.entry;
+        dadosMusicas = entries.map(entry => ({
+          classificacao: entry.gsx$classificação.$t,
+          ritmo: entry.gsx$ritmo.$t,
+          musica: entry.gsx$música.$t,
+          cantor: entry.gsx$cantorbandaoriginal.$t,
+          versao: entry.gsx$versão.$t,
+          tomOriginal: entry.gsx$tomoriginal.$t,
+          tomIzaack: entry.gsx$tommasculinoizaack.$t,
+          tomVictor: entry.gsx$tommasculinovictor.$t,
+          tomKalebe: entry.gsx$tommasculinokalebe.$t,
+          tomFeminino: entry.gsx$tomfeminino.$t,
+          youtube: entry.gsx$linkdoyoutubeversão.$t
+        }));
+      });
+
+    function buscarMusica() {
+      const input = document.getElementById("searchInput").value.toLowerCase();
+      const resultadoDiv = document.getElementById("resultado");
+      resultadoDiv.innerHTML = "";
+
+      const musicaEncontrada = dadosMusicas.find(m => m.musica.toLowerCase().includes(input));
+
+      if (!musicaEncontrada) {
+        resultadoDiv.innerHTML = '<p class="no-results">Música não encontrada.</p>';
+        return;
+      }
+
+      const tabela = `
+        <table>
+          <thead>
+            <tr>
+              <th>Classificação</th>
+              <th>Ritmo</th>
+              <th>Música</th>
+              <th>Cantor/Banda Original</th>
+              <th>Versão</th>
+              <th>Tom Original</th>
+              <th>Tom (Izaack)</th>
+              <th>Tom (Victor)</th>
+              <th>Tom (Kalebe)</th>
+              <th>Tom Feminino</th>
+              <th>Link YouTube</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>${musicaEncontrada.classificacao}</td>
+              <td>${musicaEncontrada.ritmo}</td>
+              <td>${musicaEncontrada.musica}</td>
+              <td>${musicaEncontrada.cantor}</td>
+              <td>${musicaEncontrada.versao}</td>
+              <td>${musicaEncontrada.tomOriginal}</td>
+              <td>${musicaEncontrada.tomIzaack}</td>
+              <td>${musicaEncontrada.tomVictor}</td>
+              <td>${musicaEncontrada.tomKalebe}</td>
+              <td>${musicaEncontrada.tomFeminino}</td>
+              <td><a href="${musicaEncontrada.youtube}" target="_blank">Assistir</a></td>
+            </tr>
+          </tbody>
+        </table>
+      `;
+
+      resultadoDiv.innerHTML = tabela;
+    }
+  </script>
+
 </body>
 </html>
