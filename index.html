@@ -62,7 +62,8 @@
     const corpoTabela = tabela.querySelector("tbody");
     const searchButton = document.getElementById("searchButton");
 
-    const url = "https://opensheet.elk.sh/2PACX-1vT3nfCybgcT4p5fAFEV_YRn88r9R-bxatOi96UqXvI6CVb_QRc1hoVFz6YXhlafiX0lfZgTR4suVA93/REPERTORIO";
+    // Novo link baseado na nova planilha (com ID correto)
+    const url = "https://opensheet.elk.sh/15GBCT0HKO5qUloXg-LPR4gRd4JpDQpf_qxHW5Ob4CnY/REPERTORIO";
 
     function buscarMusica() {
       const termo = input.value.trim().toLowerCase();
@@ -106,7 +107,7 @@
         })
         .catch(error => {
           console.error("Erro ao buscar dados:", error);
-          alert("Erro ao buscar os dados. Verifique o link ou se a planilha está publicada corretamente.");
+          alert("Erro ao buscar os dados. Verifique se a planilha está publicada corretamente e se a aba se chama REPERTORIO.");
         });
     }
 
