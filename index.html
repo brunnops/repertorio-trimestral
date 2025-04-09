@@ -62,7 +62,8 @@
     const corpoTabela = tabela.querySelector("tbody");
     const searchButton = document.getElementById("searchButton");
 
-    const url = "https://opensheet.elk.sh/15GBCT0HKO5qUloXg-LPR4gRd4JpDQpf_qxHW5Ob4CnY/REPERTORIO";
+    // URL corrigida com o nome completo da aba da planilha
+    const url = "https://opensheet.elk.sh/15GBCT0HKO5qUloXg-LPR4gRd4JpDQpf_qxHW5Ob4CnY/REPERTÓRIO%20TRIMESTRAL%20(ABRIL-JUNHO)";
 
     function removerAcentos(str) {
       return str.normalize("NFD").replace(/\p{Diacritic}/gu, "").toLowerCase();
@@ -79,7 +80,6 @@
           return res.json();
         })
         .then(musicas => {
-          console.log("Dados recebidos da planilha:", musicas);
           const resultado = musicas.filter(item => {
             const nomeMusica = item["Música"] ? removerAcentos(item["Música"]) : "";
             return nomeMusica.includes(termo);
@@ -112,16 +112,14 @@
         })
         .catch(error => {
           console.error("Erro ao buscar dados:", error);
-          alert("Erro ao buscar os dados. Verifique se a planilha está publicada corretamente e se a aba se chama REPERTORIO.");
+          alert("Erro ao buscar os dados. Verifique se a planilha está publicada corretamente e se a aba tem o nome exato.");
         });
     }
 
     searchButton.addEventListener("click", buscarMusica);
-
     input.addEventListener("keydown", (e) => {
       if (e.key === "Enter") buscarMusica();
     });
-
     window.addEventListener("load", () => {
       input.value = "";
     });
