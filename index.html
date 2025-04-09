@@ -9,37 +9,45 @@
       padding: 2rem;
       background-color: #f9f9f9;
     }
+
     h1 {
       text-align: center;
     }
+
     .search-container {
       text-align: center;
       margin-bottom: 2rem;
     }
+
     input[type="text"] {
       padding: 10px;
       width: 300px;
       font-size: 1rem;
     }
+
     button {
       padding: 10px 20px;
       font-size: 1rem;
       margin-left: 10px;
       cursor: pointer;
     }
+
     table {
       width: 100%;
       border-collapse: collapse;
       margin-top: 2rem;
     }
+
     th, td {
       border: 1px solid #ccc;
       padding: 10px;
       text-align: left;
     }
+
     th {
       background-color: #f0f0f0;
     }
+
     .no-results {
       text-align: center;
       margin-top: 1rem;
@@ -63,38 +71,56 @@
 
     let dadosMusicas = [];
 
+    // Carrega os dados da planilha assim que a página é aberta
     fetch(url)
       .then(response => response.json())
       .then(data => {
         const entries = data.feed.entry;
         dadosMusicas = entries.map(entry => ({
-          classificacao: entry.gsx$classificação.$t,
-          ritmo: entry.gsx$ritmo.$t,
-          musica: entry.gsx$música.$t,
-          cantor: entry.gsx$cantorbandaoriginal.$t,
-          versao: entry.gsx$versão.$t,
-          tomOriginal: entry.gsx$tomoriginal.$t,
-          tomIzaack: entry.gsx$tommasculinoizaack.$t,
-          tomVictor: entry.gsx$tommasculinovictor.$t,
-          tomKalebe: entry.gsx$tommasculinokalebe.$t,
-          tomFeminino: entry.gsx$tomfeminino.$t,
-          youtube: entry.gsx$linkdoyoutubeversão.$t
+          classificacao: entry.gsx$classificação.$t || '',
+          ritmo: entry.gsx$ritmo.$t || '',
+          musica: entry.gsx$música.$t || '',
+          cantor: entry.gsx$cantorbandaoriginal.$t || '',
+          versao: entry.gsx$versão.$t || '',
+          tomOriginal: entry.gsx$tomoriginal.$t || '',
+          tomIzaack: entry.gsx$tommasculinoizaack.$t || '',
+          tomVictor: entry.gsx$tommasculinovictor.$t || '',
+          tomKalebe: entry.gsx$tommasculinokalebe.$t || '',
+          tomFeminino: entry.gsx$tomfeminino.$t || '',
+          youtube: entry.gsx$linkdoyoutubeversão.$t || ''
         }));
+      })
+      .catch(error => {
+        console.error("Erro ao carregar dados da planilha:", error);
+        document.getElementById("resultado").innerHTML = '<p class="no-results">Erro ao carregar dados. Verifique a planilha.</p>';
       });
 
+    // Permite buscar com Enter
+    document.getElementById("searchInput").addEventListener("keypress", function(event) {
+      if (event.key === "Enter") {
+        buscarMusica();
+      }
+    });
+
     function buscarMusica() {
-      const input = document.getElementById("searchInput").value.toLowerCase();
+      const input = document.getElementById("searchInput");
+      const termo = input.value.trim().toLowerCase();
       const resultadoDiv = document.getElementById("resultado");
       resultadoDiv.innerHTML = "";
 
-      const musicaEncontrada = dadosMusicas.find(m => m.musica.toLowerCase().includes(input));
-
-      if (!musicaEncontrada) {
-        resultadoDiv.innerHTML = '<p class="no-results">Música não encontrada.</p>';
+      if (termo === "") {
+        resultadoDiv.innerHTML = '<p class="no-results">Digite o nome da música.</p>';
         return;
       }
 
-      const tabela = `
+      const resultados = dadosMusicas.filter(m => m.musica.toLowerCase().includes(termo));
+
+      if (resultados.length === 0) {
+        resultadoDiv.innerHTML = '<p class="no-results">Nenhuma música encontrada.</p>';
+        return;
+      }
+
+      let tabela = `
         <table>
           <thead>
             <tr>
@@ -112,24 +138,31 @@
             </tr>
           </thead>
           <tbody>
-            <tr>
-              <td>${musicaEncontrada.classificacao}</td>
-              <td>${musicaEncontrada.ritmo}</td>
-              <td>${musicaEncontrada.musica}</td>
-              <td>${musicaEncontrada.cantor}</td>
-              <td>${musicaEncontrada.versao}</td>
-              <td>${musicaEncontrada.tomOriginal}</td>
-              <td>${musicaEncontrada.tomIzaack}</td>
-              <td>${musicaEncontrada.tomVictor}</td>
-              <td>${musicaEncontrada.tomKalebe}</td>
-              <td>${musicaEncontrada.tomFeminino}</td>
-              <td><a href="${musicaEncontrada.youtube}" target="_blank">Assistir</a></td>
-            </tr>
-          </tbody>
-        </table>
       `;
 
+      resultados.forEach(m => {
+        tabela += `
+          <tr>
+            <td>${m.classificacao}</td>
+            <td>${m.ritmo}</td>
+            <td>${m.musica}</td>
+            <td>${m.cantor}</td>
+            <td>${m.versao}</td>
+            <td>${m.tomOriginal}</td>
+            <td>${m.tomIzaack}</td>
+            <td>${m.tomVictor}</td>
+            <td>${m.tomKalebe}</td>
+            <td>${m.tomFeminino}</td>
+            <td><a href="${m.youtube}" target="_blank">Assistir</a></td>
+          </tr>
+        `;
+      });
+
+      tabela += `</tbody></table>`;
       resultadoDiv.innerHTML = tabela;
+
+      // Limpa o campo após buscar
+      input.value = "";
     }
   </script>
 
