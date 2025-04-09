@@ -2,168 +2,113 @@
 <html lang="pt-BR">
 <head>
   <meta charset="UTF-8">
-  <title>Busca de Repertório</title>
+  <title>Busca de Músicas - Repertório Trimestral</title>
   <style>
     body {
       font-family: Arial, sans-serif;
-      padding: 2rem;
-      background-color: #f9f9f9;
+      padding: 20px;
     }
-
-    h1 {
-      text-align: center;
-    }
-
-    .search-container {
-      text-align: center;
-      margin-bottom: 2rem;
-    }
-
     input[type="text"] {
-      padding: 10px;
       width: 300px;
-      font-size: 1rem;
+      padding: 8px;
+      font-size: 16px;
     }
-
     button {
-      padding: 10px 20px;
-      font-size: 1rem;
-      margin-left: 10px;
-      cursor: pointer;
+      padding: 8px 12px;
+      font-size: 16px;
     }
-
     table {
+      margin-top: 20px;
       width: 100%;
       border-collapse: collapse;
-      margin-top: 2rem;
     }
-
     th, td {
       border: 1px solid #ccc;
-      padding: 10px;
-      text-align: left;
+      padding: 8px;
     }
-
     th {
-      background-color: #f0f0f0;
-    }
-
-    .no-results {
-      text-align: center;
-      margin-top: 1rem;
-      color: red;
+      background-color: #f4f4f4;
     }
   </style>
 </head>
 <body>
 
-  <h1>Busca de Repertório Trimestral</h1>
+  <h2>Buscar Música no Repertório</h2>
+  <input type="text" id="searchInput" placeholder="Digite o nome da música...">
+  <button onclick="buscarMusica()">Pesquisar</button>
 
-  <div class="search-container">
-    <input type="text" id="searchInput" placeholder="Digite o nome da música">
-    <button onclick="buscarMusica()">Pesquisar</button>
-  </div>
-
-  <div id="resultado"></div>
+  <table id="resultTable" style="display:none;">
+    <thead>
+      <tr>
+        <th>Classificação</th>
+        <th>Ritmo</th>
+        <th>Música</th>
+        <th>Cantor/Banda Original</th>
+        <th>Versão</th>
+        <th>Tom Original</th>
+        <th>Tom (Izaack)</th>
+        <th>Tom (Victor)</th>
+        <th>Tom (Kalebe)</th>
+        <th>Tom Feminino</th>
+        <th>YouTube</th>
+      </tr>
+    </thead>
+    <tbody></tbody>
+  </table>
 
   <script>
-    const url = "https://spreadsheets.google.com/feeds/list/2PACX-1vT3nfCybgcT4p5fAFEV_YRn88r9R-bxatOi96UqXvI6CVb_QRc1hoVFz6YXhlafiX0lfZgTR4suVA93/1/public/values?alt=json";
+    const input = document.getElementById("searchInput");
+    const tabela = document.getElementById("resultTable");
+    const corpoTabela = tabela.querySelector("tbody");
 
-    let dadosMusicas = [];
-
-    // Carrega os dados da planilha assim que a página é aberta
-    fetch(url)
-      .then(response => response.json())
-      .then(data => {
-        const entries = data.feed.entry;
-        dadosMusicas = entries.map(entry => ({
-          classificacao: entry.gsx$classificação.$t || '',
-          ritmo: entry.gsx$ritmo.$t || '',
-          musica: entry.gsx$música.$t || '',
-          cantor: entry.gsx$cantorbandaoriginal.$t || '',
-          versao: entry.gsx$versão.$t || '',
-          tomOriginal: entry.gsx$tomoriginal.$t || '',
-          tomIzaack: entry.gsx$tommasculinoizaack.$t || '',
-          tomVictor: entry.gsx$tommasculinovictor.$t || '',
-          tomKalebe: entry.gsx$tommasculinokalebe.$t || '',
-          tomFeminino: entry.gsx$tomfeminino.$t || '',
-          youtube: entry.gsx$linkdoyoutubeversão.$t || ''
-        }));
-      })
-      .catch(error => {
-        console.error("Erro ao carregar dados da planilha:", error);
-        document.getElementById("resultado").innerHTML = '<p class="no-results">Erro ao carregar dados. Verifique a planilha.</p>';
-      });
-
-    // Permite buscar com Enter
-    document.getElementById("searchInput").addEventListener("keypress", function(event) {
-      if (event.key === "Enter") {
-        buscarMusica();
-      }
-    });
+    const url = "https://gsx2json.com/api?id=2PACX-1vT3nfCybgcT4p5fAFEV_YRn88r9R-bxatOi96UqXvI6CVb_QRc1hoVFz6YXhlafiX0lfZgTR4suVA93&sheet=Página1";
 
     function buscarMusica() {
-      const input = document.getElementById("searchInput");
-      const termo = input.value.trim().toLowerCase();
-      const resultadoDiv = document.getElementById("resultado");
-      resultadoDiv.innerHTML = "";
+      const termo = input.value.toLowerCase();
+      corpoTabela.innerHTML = "";
 
-      if (termo === "") {
-        resultadoDiv.innerHTML = '<p class="no-results">Digite o nome da música.</p>';
-        return;
-      }
+      fetch(url)
+        .then(res => res.json())
+        .then(data => {
+          const musicas = data.rows;
+          const resultado = musicas.filter(item =>
+            item.música && item.música.toLowerCase().includes(termo)
+          );
 
-      const resultados = dadosMusicas.filter(m => m.musica.toLowerCase().includes(termo));
-
-      if (resultados.length === 0) {
-        resultadoDiv.innerHTML = '<p class="no-results">Nenhuma música encontrada.</p>';
-        return;
-      }
-
-      let tabela = `
-        <table>
-          <thead>
-            <tr>
-              <th>Classificação</th>
-              <th>Ritmo</th>
-              <th>Música</th>
-              <th>Cantor/Banda Original</th>
-              <th>Versão</th>
-              <th>Tom Original</th>
-              <th>Tom (Izaack)</th>
-              <th>Tom (Victor)</th>
-              <th>Tom (Kalebe)</th>
-              <th>Tom Feminino</th>
-              <th>Link YouTube</th>
-            </tr>
-          </thead>
-          <tbody>
-      `;
-
-      resultados.forEach(m => {
-        tabela += `
-          <tr>
-            <td>${m.classificacao}</td>
-            <td>${m.ritmo}</td>
-            <td>${m.musica}</td>
-            <td>${m.cantor}</td>
-            <td>${m.versao}</td>
-            <td>${m.tomOriginal}</td>
-            <td>${m.tomIzaack}</td>
-            <td>${m.tomVictor}</td>
-            <td>${m.tomKalebe}</td>
-            <td>${m.tomFeminino}</td>
-            <td><a href="${m.youtube}" target="_blank">Assistir</a></td>
-          </tr>
-        `;
-      });
-
-      tabela += `</tbody></table>`;
-      resultadoDiv.innerHTML = tabela;
-
-      // Limpa o campo após buscar
-      input.value = "";
+          if (resultado.length > 0) {
+            resultado.forEach(item => {
+              const row = `
+                <tr>
+                  <td>${item.classificação || ''}</td>
+                  <td>${item.ritmo || ''}</td>
+                  <td>${item.música || ''}</td>
+                  <td>${item.cantorbandaoriginal || ''}</td>
+                  <td>${item.versão || ''}</td>
+                  <td>${item.tomoriginal || ''}</td>
+                  <td>${item.tommasculinoizaack || ''}</td>
+                  <td>${item.tommasculinovictor || ''}</td>
+                  <td>${item.tommasculinokalebe || ''}</td>
+                  <td>${item.tomfeminino || ''}</td>
+                  <td><a href="${item.linkdoyoutubeversão}" target="_blank">🔗</a></td>
+                </tr>
+              `;
+              corpoTabela.innerHTML += row;
+            });
+            tabela.style.display = "table";
+          } else {
+            tabela.style.display = "none";
+            alert("Nenhuma música encontrada.");
+          }
+        });
     }
+
+    input.addEventListener("keydown", (e) => {
+      if (e.key === "Enter") buscarMusica();
+    });
+
+    window.addEventListener("load", () => {
+      input.value = "";
+    });
   </script>
 
 </body>
