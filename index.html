@@ -35,7 +35,7 @@
 
   <h2>Buscar Música no Repertório</h2>
   <input type="text" id="searchInput" placeholder="Digite o nome da música...">
-  <button onclick="buscarMusica()">Pesquisar</button>
+  <button id="searchButton">Pesquisar</button>
 
   <table id="resultTable" style="display:none;">
     <thead>
@@ -60,36 +60,42 @@
     const input = document.getElementById("searchInput");
     const tabela = document.getElementById("resultTable");
     const corpoTabela = tabela.querySelector("tbody");
+    const searchButton = document.getElementById("searchButton");
 
-    const url = "https://gsx2json.com/api?id=2PACX-1vT3nfCybgcT4p5fAFEV_YRn88r9R-bxatOi96UqXvI6CVb_QRc1hoVFz6YXhlafiX0lfZgTR4suVA93&sheet=Página1";
+    const url = "https://opensheet.elk.sh/2PACX-1vT3nfCybgcT4p5fAFEV_YRn88r9R-bxatOi96UqXvI6CVb_QRc1hoVFz6YXhlafiX0lfZgTR4suVA93/Página1";
 
     function buscarMusica() {
-      const termo = input.value.toLowerCase();
+      const termo = input.value.trim().toLowerCase();
+      if (termo === "") return;
       corpoTabela.innerHTML = "";
 
       fetch(url)
-        .then(res => res.json())
+        .then(res => {
+          if (!res.ok) {
+            throw new Error("Erro na resposta da planilha");
+          }
+          return res.json();
+        })
         .then(data => {
-          const musicas = data.rows;
-          const resultado = musicas.filter(item =>
-            item.música && item.música.toLowerCase().includes(termo)
+          const resultado = data.filter(item =>
+            item["Música"] && item["Música"].toLowerCase().includes(termo)
           );
 
           if (resultado.length > 0) {
             resultado.forEach(item => {
               const row = `
                 <tr>
-                  <td>${item.classificação || ''}</td>
-                  <td>${item.ritmo || ''}</td>
-                  <td>${item.música || ''}</td>
-                  <td>${item.cantorbandaoriginal || ''}</td>
-                  <td>${item.versão || ''}</td>
-                  <td>${item.tomoriginal || ''}</td>
-                  <td>${item.tommasculinoizaack || ''}</td>
-                  <td>${item.tommasculinovictor || ''}</td>
-                  <td>${item.tommasculinokalebe || ''}</td>
-                  <td>${item.tomfeminino || ''}</td>
-                  <td><a href="${item.linkdoyoutubeversão}" target="_blank">🔗</a></td>
+                  <td>${item["Classificação"] || ''}</td>
+                  <td>${item["Ritmo"] || ''}</td>
+                  <td>${item["Música"] || ''}</td>
+                  <td>${item["Cantor/Banda Original"] || ''}</td>
+                  <td>${item["Versão"] || ''}</td>
+                  <td>${item["Tom Original"] || ''}</td>
+                  <td>${item["Tom Masculino (Izaack)"] || ''}</td>
+                  <td>${item["Tom Masculino (Victor)"] || ''}</td>
+                  <td>${item["Tom Masculino (Kalebe)"] || ''}</td>
+                  <td>${item["Tom Feminino"] || ''}</td>
+                  <td><a href="${item["Link do YouTube (Versão)"]}" target="_blank">🔗</a></td>
                 </tr>
               `;
               corpoTabela.innerHTML += row;
@@ -99,13 +105,22 @@
             tabela.style.display = "none";
             alert("Nenhuma música encontrada.");
           }
+        })
+        .catch(error => {
+          console.error("Erro ao buscar dados:", error);
+          alert("Erro ao buscar dados da planilha. Verifique o link ou tente novamente mais tarde.");
         });
     }
 
+    // Buscar ao clicar no botão
+    searchButton.addEventListener("click", buscarMusica);
+
+    // Buscar ao pressionar Enter
     input.addEventListener("keydown", (e) => {
       if (e.key === "Enter") buscarMusica();
     });
 
+    // Limpar o campo ao carregar
     window.addEventListener("load", () => {
       input.value = "";
     });
