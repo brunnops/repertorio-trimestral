@@ -18,7 +18,7 @@ function search() {
     }
 
     const url = `https://sheets.googleapis.com/v4/spreadsheets/${sheetID}/values/${sheetName}?key=${apiKey}`;
-    
+
     $.getJSON(url).then(function(data) {
         const rows = data.values;
 
@@ -30,17 +30,29 @@ function search() {
         const escapedQuery = escapeRegExp(query);
         const regex = new RegExp(`(^|\\s)${escapedQuery}(?=\\s|$)`, "i");
 
-        // Remove o cabeçalho
         const contentRows = rows.slice(1);
 
         const results = contentRows.filter(row =>
-            regex.test(removeAcentos((row[1] || "").toLowerCase()))
+            regex.test(removeAcentos((row[2] || "").toLowerCase()))
         );
 
         if (results.length === 0) {
             $("#results").html('<p class="se" style="color: red;">Nenhum resultado encontrado. Tente outra busca.</p>');
         } else {
-            let html = '<table><thead><tr><th>Quem ministra</th><th>Música</th><th>Cantor/Banda/Versão</th><th>Tom Original</th><th>Tom Adaptado</th><th>Observações</th><th>Link YouTube</th></tr></thead><tbody>';
+            let html = '<table><thead><tr>' +
+              '<th>Classificação</th>' +
+              '<th>Ritmo</th>' +
+              '<th>Música</th>' +
+              '<th>Cantor/Banda Original</th>' +
+              '<th>Versão</th>' +
+              '<th>Tom Original</th>' +
+              '<th>Tom Masculino (Izaack)</th>' +
+              '<th>Tom Masculino (Victor)</th>' +
+              '<th>Tom Masculino (Kaleb)</th>' +
+              '<th>Tom Feminino</th>' +
+              '<th>Link YouTube</th>' +
+              '</tr></thead><tbody>';
+
             results.forEach(row => {
                 html += `<tr>
                     <td>${row[0] || ""}</td>
@@ -49,9 +61,14 @@ function search() {
                     <td>${row[3] || ""}</td>
                     <td>${row[4] || ""}</td>
                     <td>${row[5] || ""}</td>
-                    <td>${row[6] ? `<a href="${row[6]}" target="_blank">🔗</a>` : ""}</td>
+                    <td>${row[6] || ""}</td>
+                    <td>${row[7] || ""}</td>
+                    <td>${row[8] || ""}</td>
+                    <td>${row[9] || ""}</td>
+                    <td>${row[10] ? `<a href="${row[10]}" target="_blank">🔗</a>` : ""}</td>
                 </tr>`;
             });
+
             html += '</tbody></table>';
             $("#results").html(html);
         }
@@ -61,28 +78,11 @@ function search() {
     });
 }
 
-// Código do modal e eventos permanece igual
 $(document).ready(function() {
     $("#searchInput").on("keypress", function(event) {
         if (event.which === 13) {
             event.preventDefault();
             search();
-        }
-    });
-
-    $("#ministersModal").hide();
-
-    $("#openMinistersModal").click(function() {
-        $("#ministersModal").fadeIn();
-    });
-
-    $(".close").click(function() {
-        $("#ministersModal").fadeOut();
-    });
-
-    $(window).click(function(event) {
-        if (event.target.id === "ministersModal") {
-            $("#ministersModal").fadeOut();
         }
     });
 });
