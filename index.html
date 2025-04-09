@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+    <title>Repertórios da PIBI</title>
+    <link rel="stylesheet" href="style.css"> <!-- Para um arquivo CSS externo (opcional) -->
+    <link id="favicon-light" rel="shortcut icon" href="pibilogolight.png" type="image/png" sizes="32x32" media="(prefers-color-scheme: dark)">
+    <link id="favicon-dark" rel="shortcut icon" href="pibilogodark.png" type="image/png" sizes="32x32" media="(prefers-color-scheme: light)">
+
+    
+</head>
+<body>
+    <div id="container">
+        <main>
+            <section>
+                <h1>Repertórios da <abbr class="PIBI" title="Primeira Igreja Batista de Itaporanga">PIBI</abbr></h1>
+               
+                <p class="boas-vindas">Este site oferece uma busca pelo repertório musical ministrado na nossa igreja. 
+                    Você pode pesquisar pelo nome da música, cantor, banda ou versão. Também é possível filtrar todo o repertório de um ministro específico pesquisando pelo seu nome.
+                    <span id="openMinistersModal" class="clickable-text"><strong>Clique aqui</strong></span> para visualizar a nossa lista de ministros.
+
+                    <!-- Modal (Pop-up) -->
+<div id="ministersModal" class="modal">
+    <div class="modal-content">
+        <span class="close">&times;</span>
+        <h3>Ministros da PIBI</h3>
+        <ul> 
+            <li>  Izaack</li>
+            <li>Victor</li>
+            <li>Jéssica</li>
+            <li>Joicy</li>
+            <li>Fernanda</li>
+            <li>Geysa</li>
+            <li>Kalebe</li>
+            <li>Rayane</li>
+            <li>Thaís</li>    
+        </ul>
+    </div>
+</div>
+                    
+                    <p class="boas-vindas">Use a barra de pesquisa para encontrar exatamente o que precisa, seja uma música específica ou todo o repertório de canções ministradas por alguém.
+                        <em class="boas-vindas">(se você estiver usando um dispositivo com tela pequena, deslize lateralmente para visualizar todo o conteúdo da pesquisa).</em></p>
+                   </p>
+            
+
+                <input type="text" id="searchInput" placeholder="Digite aqui para pesquisar...">
+                <button onclick="search()">Buscar</button>
+            </section>
+        </main>
+          
+            <!-- Contêiner para rolagem lateral na tabela -->
+            <div class="table-container">
+                <table id="results">
+                    <!-- Conteúdo da tabela será inserido dinamicamente -->
+                </table>
+            </div>
+            
+                
+    </div>
+
+    <!-- Footer foi movido para fora do container -->
+    <footer>
+        <p class="footer">“Todo ser que respira louve ao Senhor. Aleluia!” Salmos 150:6</p>
+
+        <!-- <div class="icon-container">
+        
+                 <a class="links" href="https://www.instagram.com/igrejabatistaitaporanga/" target="_blank">
+                <img src="imagens/instagram-black.png" alt="Instagram" class="icon"> </a>
+
+                 <a class="links" href="https://www.youtube.com/@pibitaporanga7162" target="_blank">
+                <img src="imagens/youtube-black.png" alt="YouTube" class="icon"> </a>
+
+                <a class="links" href="https://www.facebook.com/pibitaporanga" target="_blank">
+                <img src="imagens/facebook-black.png" alt="Facebook" class="icon"> </a>
+
+             </div> -->
+
+        </p>
+    </footer>
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="buscarMusicas.js"></script> <!-- Coloque o arquivo JS separado aqui -->
+</body>
+</html>
