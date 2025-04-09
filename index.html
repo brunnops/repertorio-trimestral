@@ -62,8 +62,8 @@
     const corpoTabela = tabela.querySelector("tbody");
     const searchButton = document.getElementById("searchButton");
 
-    // URL corrigida com o nome completo da aba da planilha
-    const url = "https://opensheet.elk.sh/15GBCT0HKO5qUloXg-LPR4gRd4JpDQpf_qxHW5Ob4CnY/REPERTÓRIO%20TRIMESTRAL%20(ABRIL-JUNHO)";
+    // URL com nome atualizado da aba da planilha (sem acento)
+    const url = "https://opensheet.elk.sh/15GBCT0HKO5qUloXg-LPR4gRd4JpDQpf_qxHW5Ob4CnY/REPERTORIO";
 
     function removerAcentos(str) {
       return str.normalize("NFD").replace(/\p{Diacritic}/gu, "").toLowerCase();
