@@ -1,19 +1,16 @@
-// Função para remover acentos das strings
 function removeAcentos(str) {
     return str.normalize('NFD').replace(/[\u0300-\u036f]/g, "");
 }
 
-// Função para escapar caracteres especiais em expressões regulares
 function escapeRegExp(text) {
     return text.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
 }
 
 function search() {
     const query = removeAcentos($("#searchInput").val().toLowerCase().trim());
-    const sheetID = '1rEmtLEKMz7wGXYs2y3FKpp_BCcNVI4y_UmtL7AC-noY';
+    const sheetID = '15GBCT0HKO5qUloXg-LPR4gRd4JpDQpf_qxHW5Ob4CnY';
     const apiKey = 'AIzaSyAc1AvFjueKSY6yTiOv6g6-dJY7a05urLk';
     const sheetName = 'REPERTORIOS';
-    let allResults = [];
 
     if (query === "") {
         $("#results").html('<p class="se" style="color: red;">Por favor, insira uma palavra-chave válida para a busca.</p>');
@@ -31,25 +28,29 @@ function search() {
         }
 
         const escapedQuery = escapeRegExp(query);
-        const regex = new RegExp(`(^|\\s)${escapedQuery}(?=\\s|$)`, "i"); // Agora considera palavras inteiras
+        const regex = new RegExp(`(^|\\s)${escapedQuery}(?=\\s|$)`, "i");
 
-        const results = rows.filter(row => 
-            regex.test(removeAcentos(row[0] || "").toLowerCase()) || 
-            regex.test(removeAcentos(row[1] || "").toLowerCase()) || 
-            regex.test(removeAcentos(row[2] || "").toLowerCase()) ||
-            regex.test(removeAcentos(row[3] || "").toLowerCase()) || 
-            regex.test(removeAcentos(row[4] || "").toLowerCase()) || 
-            regex.test(removeAcentos(row[5] || "").toLowerCase())
+        // Remove o cabeçalho
+        const contentRows = rows.slice(1);
+
+        const results = contentRows.filter(row =>
+            regex.test(removeAcentos((row[1] || "").toLowerCase()))
         );
 
-        allResults = allResults.concat(results);
-
-        if (allResults.length === 0) {
+        if (results.length === 0) {
             $("#results").html('<p class="se" style="color: red;">Nenhum resultado encontrado. Tente outra busca.</p>');
         } else {
-            let html = '<table><thead><tr><th>Quem ministra</th><th>Música</th><th>Cantor/Banda/Versão</th><th>Tom Original</th><th>Tom Adaptado</th><th>Observações</th></tr></thead><tbody>';
-            allResults.forEach(row => {
-                html += `<tr><td>${row[0]}</td><td>${row[1]}</td><td>${row[2]}</td><td>${row[3]}</td><td>${row[4]}</td><td>${row[5]}</td></tr>`;
+            let html = '<table><thead><tr><th>Quem ministra</th><th>Música</th><th>Cantor/Banda/Versão</th><th>Tom Original</th><th>Tom Adaptado</th><th>Observações</th><th>Link YouTube</th></tr></thead><tbody>';
+            results.forEach(row => {
+                html += `<tr>
+                    <td>${row[0] || ""}</td>
+                    <td>${row[1] || ""}</td>
+                    <td>${row[2] || ""}</td>
+                    <td>${row[3] || ""}</td>
+                    <td>${row[4] || ""}</td>
+                    <td>${row[5] || ""}</td>
+                    <td>${row[6] ? `<a href="${row[6]}" target="_blank">🔗</a>` : ""}</td>
+                </tr>`;
             });
             html += '</tbody></table>';
             $("#results").html(html);
@@ -60,6 +61,7 @@ function search() {
     });
 }
 
+// Código do modal e eventos permanece igual
 $(document).ready(function() {
     $("#searchInput").on("keypress", function(event) {
         if (event.which === 13) {
@@ -68,20 +70,16 @@ $(document).ready(function() {
         }
     });
 
-    // Garante que o modal está oculto ao carregar a página
     $("#ministersModal").hide();
 
-    // Exibe o modal ao clicar no texto "Clique aqui"
     $("#openMinistersModal").click(function() {
         $("#ministersModal").fadeIn();
     });
 
-    // Fecha o modal ao clicar no "X"
     $(".close").click(function() {
         $("#ministersModal").fadeOut();
     });
 
-    // Fecha o modal ao clicar fora dele
     $(window).click(function(event) {
         if (event.target.id === "ministersModal") {
             $("#ministersModal").fadeOut();
@@ -89,7 +87,6 @@ $(document).ready(function() {
     });
 });
 
-// Limpa o campo de pesquisa quando a página é carregada
 window.onload = function() {
     document.getElementById("searchInput").value = "";
 };
