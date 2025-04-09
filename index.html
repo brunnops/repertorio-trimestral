@@ -64,12 +64,12 @@
 
     const url = "https://opensheet.elk.sh/15GBCT0HKO5qUloXg-LPR4gRd4JpDQpf_qxHW5Ob4CnY/REPERTORIO";
 
-    function normalize(str) {
+    function removerAcentos(str) {
       return str.normalize("NFD").replace(/\p{Diacritic}/gu, "").toLowerCase();
     }
 
     function buscarMusica() {
-      const termo = normalize(input.value.trim());
+      const termo = removerAcentos(input.value.trim());
       if (termo === "") return;
       corpoTabela.innerHTML = "";
 
@@ -79,9 +79,10 @@
           return res.json();
         })
         .then(musicas => {
+          console.log("Dados recebidos da planilha:", musicas);
           const resultado = musicas.filter(item => {
-            if (!item["Música"]) return false;
-            return normalize(item["Música"]).includes(termo);
+            const nomeMusica = item["Música"] ? removerAcentos(item["Música"]) : "";
+            return nomeMusica.includes(termo);
           });
 
           if (resultado.length > 0) {
