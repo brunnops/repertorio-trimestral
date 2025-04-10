@@ -2,7 +2,7 @@
 <html lang="pt-BR">
 <head>
   <meta charset="UTF-8">
-  <title>Busca de Músicas - Repertório</title>
+  <title>Busca de Músicas - Repertório Trimestral</title>
   <style>
     body {
       font-family: Arial, sans-serif;
@@ -62,10 +62,13 @@
     const corpoTabela = tabela.querySelector("tbody");
     const searchButton = document.getElementById("searchButton");
 
-    const url = "https://opensheet.elk.sh/2PACX-1vT3nfCybgcT4p5fAFEV_YRn88r9R-bxatOi96UqXvI6CVb_QRc1hoVFz6YXhlafiX0lfZgTR4suVA93/REPERTORIO";
+    // O ID da planilha (visível no link de edição, não o link de publicação)
+    const sheetId = "15GBCT0HKO5qUloXg-LPR4gRd4JpDQpf_qxHW5Ob4CnY";
+    const sheetName = "REPERTORIO"; // Nome da aba (sem acento)
+    const url = `https://opensheet.elk.sh/${sheetId}/${sheetName}`;
 
     function removerAcentos(str) {
-      return str.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase();
+      return str.normalize("NFD").replace(/\p{Diacritic}/gu, "").toLowerCase();
     }
 
     function buscarMusica() {
@@ -111,7 +114,7 @@
         })
         .catch(error => {
           console.error("Erro ao buscar dados:", error);
-          alert("Erro ao buscar os dados. Verifique se a planilha está publicada corretamente.");
+          alert("Erro ao buscar os dados. Verifique se a planilha está publicada corretamente e se a aba tem o nome exato.");
         });
     }
 
