@@ -2,7 +2,7 @@
 <html lang="pt-BR">
 <head>
   <meta charset="UTF-8">
-  <title>Busca de Músicas - Repertório Trimestral</title>
+  <title>Busca de Músicas - Repertório</title>
   <style>
     body {
       font-family: Arial, sans-serif;
@@ -34,7 +34,7 @@
 <body>
 
   <h2>Buscar Música no Repertório</h2>
-  <input type="text" id="searchInput" placeholder="Digite o nome da música...">
+  <input type="text" id="searchInput" placeholder="Digite o nome da música1..">
   <button id="searchButton">Pesquisar</button>
 
   <table id="resultTable" style="display:none;">
@@ -62,11 +62,10 @@
     const corpoTabela = tabela.querySelector("tbody");
     const searchButton = document.getElementById("searchButton");
 
-    // ✅ URL atualizada com ID correto da planilha publicada
     const url = "https://opensheet.elk.sh/2PACX-1vT3nfCybgcT4p5fAFEV_YRn88r9R-bxatOi96UqXvI6CVb_QRc1hoVFz6YXhlafiX0lfZgTR4suVA93/REPERTORIO";
 
     function removerAcentos(str) {
-      return str.normalize("NFD").replace(/\p{Diacritic}/gu, "").toLowerCase();
+      return str.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase();
     }
 
     function buscarMusica() {
@@ -112,7 +111,7 @@
         })
         .catch(error => {
           console.error("Erro ao buscar dados:", error);
-          alert("Erro ao buscar os dados. Verifique se a planilha está publicada corretamente e se a aba tem o nome exato.");
+          alert("Erro ao buscar os dados. Verifique se a planilha está publicada corretamente.");
         });
     }
 
