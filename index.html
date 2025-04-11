@@ -1,8 +1,8 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Repertório Musical</title>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
   <style>
@@ -53,11 +53,8 @@
     tr:nth-child(even) {
       background-color: #f9f9f9;
     }
-    a {
-      color: #1a0dab;
-      text-decoration: none;
-    }
-    a:hover {
+    a.link-musica {
+      color: blue;
       text-decoration: underline;
     }
   </style>
@@ -84,13 +81,22 @@
     let todasAsMusicas = [];
     let colunas = [];
 
+    function normalizarTexto(texto) {
+      return texto
+        .normalize("NFD")
+        .replace(/[\u0300-\u036f]/g, "")
+        .toLowerCase();
+    }
+
     function exibirMusicas(filtro = "") {
       const corpoTabela = document.getElementById("musicas");
       const tabela = document.getElementById("tabela-musicas");
       corpoTabela.innerHTML = "";
 
+      const filtroNormalizado = normalizarTexto(filtro);
+
       const musicasFiltradas = todasAsMusicas.filter(item =>
-        item["MÚSICA"]?.toLowerCase().includes(filtro.toLowerCase())
+        normalizarTexto(item["MÚSICA"] || "").includes(filtroNormalizado)
       );
 
       if (musicasFiltradas.length > 0) {
@@ -101,14 +107,16 @@
 
       musicasFiltradas.forEach(item => {
         const linha = document.createElement("tr");
+
         colunas.forEach(coluna => {
           const celula = document.createElement("td");
 
-          if (coluna.toLowerCase() === "link" && item[coluna]) {
+          if (coluna === "MÚSICA" && item["Link do YouTube"]) {
             const link = document.createElement("a");
-            link.href = item[coluna];
-            link.textContent = "Abrir no YouTube";
+            link.href = item["Link do YouTube"];
             link.target = "_blank";
+            link.className = "link-musica";
+            link.textContent = item["MÚSICA"];
             celula.appendChild(link);
           } else {
             celula.textContent = item[coluna] || "-";
@@ -116,6 +124,7 @@
 
           linha.appendChild(celula);
         });
+
         corpoTabela.appendChild(linha);
       });
     }
@@ -130,6 +139,7 @@
 
           const cabecalho = document.getElementById("cabecalho");
           cabecalho.innerHTML = "";
+
           colunas.forEach(coluna => {
             const th = document.createElement("th");
             th.textContent = coluna;
