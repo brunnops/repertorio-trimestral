@@ -2,130 +2,69 @@
 <html lang="pt-BR">
 <head>
   <meta charset="UTF-8">
-  <title>Busca de Músicas - Repertório Trimestral</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Repertório Musical</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
   <style>
     body {
       font-family: Arial, sans-serif;
+      background-color: #f4f4f4;
+      margin: 0;
       padding: 20px;
     }
-    input[type="text"] {
-      width: 300px;
-      padding: 8px;
-      font-size: 16px;
+    h1 {
+      text-align: center;
     }
-    button {
-      padding: 8px 12px;
-      font-size: 16px;
+    #musicas {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+      gap: 20px;
+      margin-top: 30px;
     }
-    table {
-      margin-top: 20px;
-      width: 100%;
-      border-collapse: collapse;
+    .musica {
+      background-color: #fff;
+      padding: 15px;
+      border-radius: 8px;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
     }
-    th, td {
-      border: 1px solid #ccc;
-      padding: 8px;
+    .musica strong {
+      display: block;
+      font-size: 1.1rem;
+      color: #333;
     }
-    th {
-      background-color: #f4f4f4;
+    .musica span {
+      color: #777;
+      font-size: 0.95rem;
     }
   </style>
 </head>
 <body>
-
-  <h2>Buscar Música no Repertório</h2>
-  <input type="text" id="searchInput" placeholder="Digite o nome da música...">
-  <button id="searchButton">Pesquisar</button>
-
-  <table id="resultTable" style="display:none;">
-    <thead>
-      <tr>
-        <th>Classificação</th>
-        <th>Ritmo</th>
-        <th>Música</th>
-        <th>Cantor/Banda Original</th>
-        <th>Versão</th>
-        <th>Tom Original</th>
-        <th>Tom (Izaack)</th>
-        <th>Tom (Victor)</th>
-        <th>Tom (Kalebe)</th>
-        <th>Tom Feminino</th>
-        <th>YouTube</th>
-      </tr>
-    </thead>
-    <tbody></tbody>
-  </table>
+  <h1>Repertório Musical</h1>
+  <div id="musicas"></div>
 
   <script>
-    const input = document.getElementById("searchInput");
-    const tabela = document.getElementById("resultTable");
-    const corpoTabela = tabela.querySelector("tbody");
-    const searchButton = document.getElementById("searchButton");
+    const sheetUrl = "https://docs.google.com/spreadsheets/d/e/2PACX-1vT3nfCybgcT4p5fAFEV_YRn88r9R-bxatOi96UqXvI6CVb_QRc1hoVFz6YXhlafiX0lfZgTR4suVA93/pub?gid=0&single=true&output=csv";
 
-    // O ID da planilha (visível no link de edição, não o link de publicação)
-    const sheetId = "15GBCT0HKO5qUloXg-LPR4gRd4JpDQpf_qxHW5Ob4CnY";
-    const sheetName = "REPERTORIO"; // Nome da aba (sem acento)
-    const url = `https://opensheet.elk.sh/${sheetId}/${sheetName}`;
+    Papa.parse(sheetUrl, {
+      download: true,
+      header: true,
+      complete: function(results) {
+        const data = results.data;
+        const container = document.getElementById("musicas");
 
-    function removerAcentos(str) {
-      return str.normalize("NFD").replace(/\p{Diacritic}/gu, "").toLowerCase();
-    }
-
-    function buscarMusica() {
-      const termo = removerAcentos(input.value.trim());
-      if (termo === "") return;
-      corpoTabela.innerHTML = "";
-
-      fetch(url)
-        .then(res => {
-          if (!res.ok) throw new Error("Erro ao buscar os dados da planilha.");
-          return res.json();
-        })
-        .then(musicas => {
-          const resultado = musicas.filter(item => {
-            const nomeMusica = item["Música"] ? removerAcentos(item["Música"]) : "";
-            return nomeMusica.includes(termo);
-          });
-
-          if (resultado.length > 0) {
-            resultado.forEach(item => {
-              const row = `
-                <tr>
-                  <td>${item["Classificação"] || ''}</td>
-                  <td>${item["Ritmo"] || ''}</td>
-                  <td>${item["Música"] || ''}</td>
-                  <td>${item["Cantor/Banda Original"] || ''}</td>
-                  <td>${item["Versão"] || ''}</td>
-                  <td>${item["Tom Original"] || ''}</td>
-                  <td>${item["Tom Masculino (Izaack)"] || ''}</td>
-                  <td>${item["Tom Masculino (Victor)"] || ''}</td>
-                  <td>${item["Tom Masculino (Kalebe)"] || ''}</td>
-                  <td>${item["Tom Feminino"] || ''}</td>
-                  <td><a href="${item["Link do YouTube (versão)"]}" target="_blank">🔗</a></td>
-                </tr>
-              `;
-              corpoTabela.innerHTML += row;
-            });
-            tabela.style.display = "table";
-          } else {
-            tabela.style.display = "none";
-            alert("Nenhuma música encontrada.");
+        data.forEach(item => {
+          if (item["MÚSICA"] && item["CANTOR / BANDA ORIGINAL"]) {
+            const el = document.createElement("div");
+            el.className = "musica";
+            el.innerHTML = `
+              <strong>${item["MÚSICA"]}</strong>
+              <span>${item["CANTOR / BANDA ORIGINAL"]}</span>
+            `;
+            container.appendChild(el);
           }
-        })
-        .catch(error => {
-          console.error("Erro ao buscar dados:", error);
-          alert("Erro ao buscar os dados. Verifique se a planilha está publicada corretamente e se a aba tem o nome exato.");
         });
-    }
-
-    searchButton.addEventListener("click", buscarMusica);
-    input.addEventListener("keydown", (e) => {
-      if (e.key === "Enter") buscarMusica();
-    });
-    window.addEventListener("load", () => {
-      input.value = "";
+      }
     });
   </script>
-
 </body>
 </html>
