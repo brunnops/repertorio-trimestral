@@ -35,24 +35,35 @@
       margin-left: 10px;
       cursor: pointer;
     }
+
+    .tabela-wrapper {
+      overflow-x: auto;
+    }
+
     table {
       width: 100%;
       border-collapse: collapse;
       background-color: #fff;
       margin-top: 20px;
+      font-size: 0.85rem; /* 2px menor */
+      white-space: nowrap;
       display: none;
     }
+
     th, td {
       border: 1px solid #ddd;
       padding: 10px;
       text-align: left;
     }
+
     th {
       background-color: #f0f0f0;
     }
+
     tr:nth-child(even) {
       background-color: #f9f9f9;
     }
+
     a.link-musica {
       color: blue;
       text-decoration: underline;
@@ -68,12 +79,15 @@
     <input type="text" id="busca" placeholder="Digite o nome da música...">
     <button id="botao-busca">Buscar</button>
   </div>
-  <table id="tabela-musicas">
-    <thead>
-      <tr id="cabecalho"></tr>
-    </thead>
-    <tbody id="musicas"></tbody>
-  </table>
+
+  <div class="tabela-wrapper">
+    <table id="tabela-musicas">
+      <thead>
+        <tr id="cabecalho"></tr>
+      </thead>
+      <tbody id="musicas"></tbody>
+    </table>
+  </div>
 
   <script>
     const sheetUrl = "https://docs.google.com/spreadsheets/d/e/2PACX-1vT3nfCybgcT4p5fAFEV_YRn88r9R-bxatOi96UqXvI6CVb_QRc1hoVFz6YXhlafiX0lfZgTR4suVA93/pub?gid=0&single=true&output=csv";
@@ -82,10 +96,7 @@
     let colunas = [];
 
     function normalizarTexto(texto) {
-      return texto
-        .normalize("NFD")
-        .replace(/[\u0300-\u036f]/g, "")
-        .toLowerCase();
+      return texto.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase();
     }
 
     function exibirMusicas(filtro = "") {
@@ -99,11 +110,7 @@
         normalizarTexto(item["MÚSICA"] || "").includes(filtroNormalizado)
       );
 
-      if (musicasFiltradas.length > 0) {
-        tabela.style.display = "table";
-      } else {
-        tabela.style.display = "none";
-      }
+      tabela.style.display = musicasFiltradas.length > 0 ? "table" : "none";
 
       musicasFiltradas.forEach(item => {
         const linha = document.createElement("tr");
@@ -111,12 +118,12 @@
         colunas.forEach(coluna => {
           const celula = document.createElement("td");
 
-          if (coluna === "MÚSICA" && item["Link do YouTube"]) {
+          if (coluna === "LINK DO YOUTUBE" && item[coluna]) {
             const link = document.createElement("a");
-            link.href = item["Link do YouTube"];
+            link.href = item[coluna];
             link.target = "_blank";
             link.className = "link-musica";
-            link.textContent = item["MÚSICA"];
+            link.textContent = item["MÚSICA"] || "Ver vídeo";
             celula.appendChild(link);
           } else {
             celula.textContent = item[coluna] || "-";
