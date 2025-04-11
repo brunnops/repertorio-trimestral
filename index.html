@@ -15,56 +15,143 @@
     h1 {
       text-align: center;
     }
-    #musicas {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-      gap: 20px;
-      margin-top: 30px;
+    #apresentacao {
+      text-align: center;
+      margin-bottom: 30px;
+      font-size: 1.2rem;
     }
-    .musica {
+    #busca-container {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+    #busca {
+      width: 300px;
+      padding: 10px;
+      font-size: 1rem;
+    }
+    #botao-busca {
+      padding: 10px 20px;
+      font-size: 1rem;
+      margin-left: 10px;
+      cursor: pointer;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
       background-color: #fff;
-      padding: 15px;
-      border-radius: 8px;
-      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+      margin-top: 20px;
+      display: none;
     }
-    .musica strong {
-      display: block;
-      font-size: 1.1rem;
-      color: #333;
+    th, td {
+      border: 1px solid #ddd;
+      padding: 10px;
+      text-align: left;
     }
-    .musica span {
-      color: #777;
-      font-size: 0.95rem;
+    th {
+      background-color: #f0f0f0;
+    }
+    tr:nth-child(even) {
+      background-color: #f9f9f9;
+    }
+    a {
+      color: #1a0dab;
+      text-decoration: none;
+    }
+    a:hover {
+      text-decoration: underline;
     }
   </style>
 </head>
 <body>
   <h1>Repertório Musical</h1>
-  <div id="musicas"></div>
+  <div id="apresentacao">
+    Bem-vindo ao buscador de músicas do nosso repertório! Digite o nome de uma música para ver todos os detalhes relacionados a ela.
+  </div>
+  <div id="busca-container">
+    <input type="text" id="busca" placeholder="Digite o nome da música...">
+    <button id="botao-busca">Buscar</button>
+  </div>
+  <table id="tabela-musicas">
+    <thead>
+      <tr id="cabecalho"></tr>
+    </thead>
+    <tbody id="musicas"></tbody>
+  </table>
 
   <script>
     const sheetUrl = "https://docs.google.com/spreadsheets/d/e/2PACX-1vT3nfCybgcT4p5fAFEV_YRn88r9R-bxatOi96UqXvI6CVb_QRc1hoVFz6YXhlafiX0lfZgTR4suVA93/pub?gid=0&single=true&output=csv";
 
-    Papa.parse(sheetUrl, {
-      download: true,
-      header: true,
-      complete: function(results) {
-        const data = results.data;
-        const container = document.getElementById("musicas");
+    let todasAsMusicas = [];
+    let colunas = [];
 
-        data.forEach(item => {
-          if (item["MÚSICA"] && item["CANTOR / BANDA ORIGINAL"]) {
-            const el = document.createElement("div");
-            el.className = "musica";
-            el.innerHTML = `
-              <strong>${item["MÚSICA"]}</strong>
-              <span>${item["CANTOR / BANDA ORIGINAL"]}</span>
-            `;
-            container.appendChild(el);
+    function exibirMusicas(filtro = "") {
+      const corpoTabela = document.getElementById("musicas");
+      const tabela = document.getElementById("tabela-musicas");
+      corpoTabela.innerHTML = "";
+
+      const musicasFiltradas = todasAsMusicas.filter(item =>
+        item["MÚSICA"]?.toLowerCase().includes(filtro.toLowerCase())
+      );
+
+      if (musicasFiltradas.length > 0) {
+        tabela.style.display = "table";
+      } else {
+        tabela.style.display = "none";
+      }
+
+      musicasFiltradas.forEach(item => {
+        const linha = document.createElement("tr");
+        colunas.forEach(coluna => {
+          const celula = document.createElement("td");
+
+          if (coluna.toLowerCase() === "link" && item[coluna]) {
+            const link = document.createElement("a");
+            link.href = item[coluna];
+            link.textContent = "Abrir no YouTube";
+            link.target = "_blank";
+            celula.appendChild(link);
+          } else {
+            celula.textContent = item[coluna] || "-";
           }
+
+          linha.appendChild(celula);
         });
+        corpoTabela.appendChild(linha);
+      });
+    }
+
+    function inicializarTabela() {
+      Papa.parse(sheetUrl, {
+        download: true,
+        header: true,
+        complete: function(results) {
+          todasAsMusicas = results.data;
+          colunas = results.meta.fields;
+
+          const cabecalho = document.getElementById("cabecalho");
+          cabecalho.innerHTML = "";
+          colunas.forEach(coluna => {
+            const th = document.createElement("th");
+            th.textContent = coluna;
+            cabecalho.appendChild(th);
+          });
+        }
+      });
+    }
+
+    document.getElementById("botao-busca").addEventListener("click", () => {
+      const filtro = document.getElementById("busca").value;
+      exibirMusicas(filtro);
+    });
+
+    document.getElementById("busca").addEventListener("keypress", e => {
+      if (e.key === "Enter") {
+        const filtro = document.getElementById("busca").value;
+        exibirMusicas(filtro);
       }
     });
+
+    inicializarTabela();
   </script>
 </body>
 </html>
