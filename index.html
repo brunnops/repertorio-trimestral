@@ -12,23 +12,40 @@
       margin: 0;
       padding: 20px;
     }
+
     h1 {
       text-align: center;
+      font-size: 1.8rem;
+      margin-bottom: 5px;
     }
+
+    h2 {
+      text-align: center;
+      font-weight: normal;
+      font-size: 1.2rem;
+      margin-top: 5px;
+      margin-bottom: 30px;
+    }
+
     #apresentacao {
       text-align: center;
-      margin-bottom: 30px;
-      font-size: 1.2rem;
+      max-width: 700px;
+      margin: 0 auto 30px auto;
+      font-size: 1rem;
+      line-height: 1.5;
     }
+
     #busca-container {
       text-align: center;
       margin-bottom: 20px;
     }
+
     #busca {
       width: 300px;
       padding: 10px;
       font-size: 1rem;
     }
+
     #botao-busca {
       padding: 10px 20px;
       font-size: 1rem;
@@ -45,7 +62,7 @@
       border-collapse: collapse;
       background-color: #fff;
       margin-top: 20px;
-      font-size: 0.85rem; /* 2px menor */
+      font-size: 0.85rem;
       white-space: nowrap;
       display: none;
     }
@@ -71,10 +88,15 @@
   </style>
 </head>
 <body>
-  <h1>Repertório Musical</h1>
+  <h1>REPERTÓRIO TRIMESTRAL | PIBI MÚSICA | ABRIL – JUNHO</h1>
+  <h2>Primeira Igreja Batista de Itaporanga-PB</h2>
+
   <div id="apresentacao">
-    Bem-vindo ao buscador de músicas do nosso repertório! Digite o nome de uma música para ver todos os detalhes relacionados a ela.
+    Somos o Ministério de Louvor da Primeira Igreja Batista de Itaporanga-PB, e este espaço foi criado para facilitar o acesso ao nosso repertório de músicas.<br><br>
+    Aqui você encontrará as canções que serão ministradas durante o trimestre de abril a junho, com todas as informações necessárias como tonalidade, responsáveis, e links para ensaios ou versões de referência.<br><br>
+    Use o campo de busca abaixo para localizar rapidamente qualquer música.
   </div>
+
   <div id="busca-container">
     <input type="text" id="busca" placeholder="Digite o nome da música...">
     <button id="botao-busca">Buscar</button>
@@ -168,10 +190,11 @@
       }
     });
 
-    inicializarTabela();
-
     // Limpa o campo de busca ao carregar a página
-    document.getElementById("busca").value = "";
+    window.addEventListener("DOMContentLoaded", () => {
+      document.getElementById("busca").value = "";
+      inicializarTabela();
+    });
   </script>
 </body>
 </html>
