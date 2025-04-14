@@ -45,7 +45,7 @@
       border-collapse: collapse;
       background-color: #fff;
       margin-top: 20px;
-      font-size: 0.85rem;
+      font-size: 0.85rem; /* 2px menor */
       white-space: nowrap;
       display: none;
     }
@@ -169,6 +169,9 @@
     });
 
     inicializarTabela();
+
+    // Limpa o campo de busca ao carregar a página
+    document.getElementById("busca").value = "";
   </script>
 </body>
 </html>
