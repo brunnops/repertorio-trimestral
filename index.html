@@ -174,14 +174,25 @@
 
         colunas.forEach(coluna => {
           const celula = document.createElement("td");
+          
+        if (coluna === "LINK DO YOUTUBE (VERSÃO)" && item[coluna]) {
+        const link = document.createElement("a");
+        link.href = item[coluna];
+        link.target = "_blank";
+        link.className = "link-musica";
 
-          if (coluna === "LINK DO YOUTUBE (VERSÃO)" && item[coluna]) {
-            const link = document.createElement("a");
-            link.href = item[coluna];
-            link.target = "_blank";
-            link.className = "link-musica";
-            link.textContent = item["MÚSICA"] || "Ver vídeo";
-            celula.appendChild(link);
+        // YouTube SVG ícone
+        const icon = document.createElement("img");
+        icon.src = "https://www.svgrepo.com/show/13671/youtube.svg";
+        icon.alt = "YouTube";
+        icon.style.width = "16px";
+        icon.style.height = "16px";
+        icon.style.verticalAlign = "middle";
+        icon.style.marginRight = "6px";
+
+        link.appendChild(icon);
+        link.appendChild(document.createTextNode(item["MÚSICA"] || "Ver vídeo"));
+        celula.appendChild(link);
           } else {
             celula.textContent = item[coluna] || "-";
           }
