@@ -2,229 +2,147 @@
 <html lang="pt-BR">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Repertórios da PIBI</title>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Repertórios Trimestrais - PIBI Música</title>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+  <script src="https://unpkg.com/vue@3"></script>
   <style>
     body {
+      margin: 0;
       font-family: 'Inter', sans-serif;
       background-color: #1e1e1e;
-      margin: 0;
-      padding: 20px;
-      color: #333;
+      color: #fff;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 2rem;
     }
-
+    .container {
+      background-color: #fff;
+      color: #333;
+      border-radius: 1rem;
+      padding: 2rem;
+      max-width: 1000px;
+      width: 100%;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+    }
     h1 {
       text-align: center;
-      color: #0077b6;
-      font-size: 1.8rem;
-      margin-bottom: 10px;
+      color: #1b4e6b;
+      font-size: 2rem;
+      margin-bottom: 1rem;
     }
-
-    .container {
-      max-width: 800px;
-      margin: 0 auto;
-      background-color: #fff;
-      padding: 30px;
-      border-radius: 15px;
-      box-shadow: 0 4px 20px rgba(0,0,0,0.2);
-    }
-
     .descricao {
       font-size: 1rem;
-      text-align: justify;
       line-height: 1.6;
-      margin-bottom: 20px;
+      text-align: justify;
+      margin-bottom: 2rem;
     }
-
-    .descricao a {
-      color: #0077b6;
-      font-weight: 600;
-      text-decoration: underline;
-    }
-
-    .descricao em {
-      font-size: 0.9rem;
-      color: #666;
-    }
-
-    .busca {
-      text-align: center;
-      margin-top: 20px;
-    }
-
-    #busca {
+    input[type="text"] {
       width: 100%;
-      max-width: 400px;
-      padding: 12px;
+      padding: 0.75rem;
+      border-radius: 0.5rem;
+      border: 1px solid #ccc;
       font-size: 1rem;
-      border: 2px solid #0077b6;
-      border-radius: 8px;
-      margin-bottom: 10px;
+      margin-bottom: 1rem;
     }
-
-    #botao-busca {
-      background-color: #0077b6;
+    button {
+      width: 100%;
+      padding: 0.75rem;
+      background-color: #1b4e6b;
       color: #fff;
+      font-weight: bold;
       border: none;
-      padding: 12px 24px;
-      font-size: 1rem;
-      border-radius: 8px;
+      border-radius: 0.5rem;
       cursor: pointer;
-      transition: background 0.3s ease;
+      font-size: 1rem;
     }
-
-    #botao-busca:hover {
-      background-color: #023e8a;
-    }
-
-    .tabela-wrapper {
-      overflow-x: auto;
-      margin-top: 40px;
-    }
-
     table {
       width: 100%;
       border-collapse: collapse;
-      background-color: #fff;
-      font-size: 0.95rem;
-      border-radius: 8px;
-      overflow: hidden;
-      display: none;
+      margin-top: 2rem;
     }
-
     th, td {
-      border: 1px solid #ddd;
-      padding: 12px;
+      border: 1px solid #ccc;
+      padding: 0.75rem;
       text-align: left;
     }
-
     th {
-      background-color: #0077b6;
-      color: white;
+      background-color: #1b4e6b;
+      color: #fff;
     }
-
-    tr:nth-child(even) {
-      background-color: #f9f9f9;
-    }
-
-    a.link-musica {
-      color: #0077b6;
+    td a {
+      color: #1b4e6b;
       text-decoration: underline;
     }
   </style>
 </head>
 <body>
-
-  <div class="container">
-    <h1>REPERTÓRIOS DA PIBI · ABRIL A JUNHO</h1>
+  <div id="app" class="container">
+    <h1>REPERTÓRIO TRIMESTRAL - PIBI MÚSICA (ABRIL A JUNHO)</h1>
     <div class="descricao">
-      Este site oferece uma busca pelo repertório musical ministrado na nossa igreja. Você pode pesquisar pelo nome da música, cantor, banda ou versão. Também é possível filtrar todo o repertório de um ministro específico pesquisando pelo seu nome. 
-      <a href="#">Clique aqui</a> para visualizar a nossa lista de ministros.<br><br>
-      Use a barra de pesquisa para encontrar exatamente o que precisa, seja uma música específica ou todo o repertório de canções ministradas por alguém. <em>(Se você estiver usando um dispositivo com tela pequena, deslize lateralmente para visualizar todo o conteúdo da pesquisa).</em>
+      Somos o Ministério de Louvor da Primeira Igreja Batista de Itaporanga-PB, e este espaço foi criado para facilitar o acesso ao nosso repertório de músicas. Aqui você encontrará as canções que serão ministradas durante o trimestre de abril a junho, com todas as informações necessárias como tonalidade, responsáveis e links para ensaios ou versões de referência. Use o campo de busca abaixo para localizar rapidamente qualquer música.
     </div>
+    <input type="text" v-model="search" placeholder="Digite para buscar..." @input="filtrar" />
+    <button @click="filtrar">Buscar</button>
 
-    <div class="busca">
-      <input type="text" id="busca" placeholder="Digite o nome da música ou ministro...">
-      <br>
-      <button id="botao-busca">Buscar</button>
-    </div>
-  </div>
-
-  <div class="tabela-wrapper">
-    <table id="tabela-musicas">
+    <table v-if="dadosFiltrados.length">
       <thead>
-        <tr id="cabecalho"></tr>
+        <tr>
+          <th v-for="coluna in colunas" :key="coluna">{{ coluna }}</th>
+        </tr>
       </thead>
-      <tbody id="musicas"></tbody>
+      <tbody>
+        <tr v-for="(item, index) in dadosFiltrados" :key="index">
+          <td v-for="coluna in colunas" :key="coluna">
+            <a v-if="coluna.toLowerCase().includes('link do youtube') && item[coluna]" :href="item[coluna]" target="_blank">Ver link</a>
+            <span v-else>{{ item[coluna] }}</span>
+          </td>
+        </tr>
+      </tbody>
     </table>
+    <p v-else style="margin-top: 2rem; text-align: center;">Nenhum resultado encontrado.</p>
   </div>
 
   <script>
-    const sheetUrl = "https://docs.google.com/spreadsheets/d/e/2PACX-1vT3nfCybgcT4p5fAFEV_YRn88r9R-bxatOi96UqXvI6CVb_QRc1hoVFz6YXhlafiX0lfZgTR4suVA93/pub?gid=0&single=true&output=csv";
+    const { createApp } = Vue;
 
-    let todasAsMusicas = [];
-    let colunas = [];
-
-    function normalizarTexto(texto) {
-      return texto.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase();
-    }
-
-    function exibirMusicas(filtro = "") {
-      const corpoTabela = document.getElementById("musicas");
-      const tabela = document.getElementById("tabela-musicas");
-      corpoTabela.innerHTML = "";
-
-      const filtroNormalizado = normalizarTexto(filtro);
-
-      const musicasFiltradas = todasAsMusicas.filter(item =>
-        colunas.some(coluna =>
-          normalizarTexto(item[coluna] || "").includes(filtroNormalizado)
-        )
-      );
-
-      tabela.style.display = musicasFiltradas.length > 0 ? "table" : "none";
-
-      musicasFiltradas.forEach(item => {
-        const linha = document.createElement("tr");
-
-        colunas.forEach(coluna => {
-          const celula = document.createElement("td");
-
-          if (coluna.toLowerCase().includes("link") && item[coluna]) {
-            const link = document.createElement("a");
-            link.href = item[coluna];
-            link.target = "_blank";
-            link.className = "link-musica";
-            link.textContent = item["MÚSICA"] || "Ver vídeo";
-            celula.appendChild(link);
-          } else {
-            celula.textContent = item[coluna] || "-";
-          }
-
-          linha.appendChild(celula);
-        });
-
-        corpoTabela.appendChild(linha);
-      });
-    }
-
-    function inicializarTabela() {
-      document.getElementById("busca").value = ""; // Limpar campo ao carregar
-      Papa.parse(sheetUrl, {
-        download: true,
-        header: true,
-        complete: function(results) {
-          todasAsMusicas = results.data;
-          colunas = results.meta.fields;
-
-          const cabecalho = document.getElementById("cabecalho");
-          cabecalho.innerHTML = "";
-
-          colunas.forEach(coluna => {
-            const th = document.createElement("th");
-            th.textContent = coluna;
-            cabecalho.appendChild(th);
-          });
+    createApp({
+      data() {
+        return {
+          search: '',
+          dados: [],
+          colunas: []
+        };
+      },
+      computed: {
+        dadosFiltrados() {
+          if (!this.search) return this.dados;
+          const termo = this.search.toLowerCase();
+          return this.dados.filter(item =>
+            this.colunas.some(coluna =>
+              item[coluna] && item[coluna].toLowerCase().includes(termo)
+            )
+          );
         }
-      });
-    }
-
-    document.getElementById("botao-busca").addEventListener("click", () => {
-      const filtro = document.getElementById("busca").value;
-      exibirMusicas(filtro);
-    });
-
-    document.getElementById("busca").addEventListener("keypress", e => {
-      if (e.key === "Enter") {
-        const filtro = document.getElementById("busca").value;
-        exibirMusicas(filtro);
+      },
+      methods: {
+        async carregarDados() {
+          const url = 'https://opensheet.elk.sh/1lULUI62wv7d43ITuhb-WHhXZ_C94fgGosEDJj8MZ4UQ/REPERTÓRIO%20TRIMESTRAL%20(ABRIL-JUNHO)';
+          const resposta = await fetch(url);
+          const conteudo = await resposta.json();
+          this.dados = conteudo;
+          this.colunas = conteudo.length > 0 ? Object.keys(conteudo[0]) : [];
+        },
+        filtrar() {
+          // Trigger manual update if needed
+        }
+      },
+      mounted() {
+        this.carregarDados();
+        this.search = ''; // limpa o campo de busca ao recarregar
       }
-    });
-
-    inicializarTabela();
+    }).mount('#app');
   </script>
-
 </body>
 </html>
