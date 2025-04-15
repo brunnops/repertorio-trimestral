@@ -3,78 +3,106 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Repertório Musical</title>
+  <title>Repertórios da PIBI</title>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
   <style>
     body {
-      font-family: Arial, sans-serif;
-      background-color: #f4f4f4;
+      font-family: 'Inter', sans-serif;
+      background-color: #1e1e1e;
       margin: 0;
       padding: 20px;
+      color: #333;
     }
 
     h1 {
       text-align: center;
+      color: #0077b6;
       font-size: 1.8rem;
-      margin-bottom: 5px;
+      margin-bottom: 10px;
     }
 
-    h2 {
-      text-align: center;
-      font-weight: normal;
-      font-size: 1.2rem;
-      margin-top: 5px;
-      margin-bottom: 30px;
+    .container {
+      max-width: 800px;
+      margin: 0 auto;
+      background-color: #fff;
+      padding: 30px;
+      border-radius: 15px;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.2);
     }
 
-    #apresentacao {
-      text-align: center;
-      max-width: 700px;
-      margin: 0 auto 30px auto;
+    .descricao {
       font-size: 1rem;
-      line-height: 1.5;
-    }
-
-    #busca-container {
-      text-align: center;
+      text-align: justify;
+      line-height: 1.6;
       margin-bottom: 20px;
     }
 
+    .descricao a {
+      color: #0077b6;
+      font-weight: 600;
+      text-decoration: underline;
+    }
+
+    .descricao em {
+      font-size: 0.9rem;
+      color: #666;
+    }
+
+    .busca {
+      text-align: center;
+      margin-top: 20px;
+    }
+
     #busca {
-      width: 300px;
-      padding: 10px;
+      width: 100%;
+      max-width: 400px;
+      padding: 12px;
       font-size: 1rem;
+      border: 2px solid #0077b6;
+      border-radius: 8px;
+      margin-bottom: 10px;
     }
 
     #botao-busca {
-      padding: 10px 20px;
+      background-color: #0077b6;
+      color: #fff;
+      border: none;
+      padding: 12px 24px;
       font-size: 1rem;
-      margin-left: 10px;
+      border-radius: 8px;
       cursor: pointer;
+      transition: background 0.3s ease;
+    }
+
+    #botao-busca:hover {
+      background-color: #023e8a;
     }
 
     .tabela-wrapper {
       overflow-x: auto;
+      margin-top: 40px;
     }
 
     table {
       width: 100%;
       border-collapse: collapse;
       background-color: #fff;
-      margin-top: 20px;
-      font-size: 0.85rem;
-      white-space: nowrap;
+      font-size: 0.95rem;
+      border-radius: 8px;
+      overflow: hidden;
       display: none;
     }
 
     th, td {
       border: 1px solid #ddd;
-      padding: 10px;
+      padding: 12px;
       text-align: left;
     }
 
     th {
-      background-color: #f0f0f0;
+      background-color: #0077b6;
+      color: white;
     }
 
     tr:nth-child(even) {
@@ -82,24 +110,26 @@
     }
 
     a.link-musica {
-      color: blue;
+      color: #0077b6;
       text-decoration: underline;
     }
   </style>
 </head>
 <body>
-  <h1>REPERTÓRIO TRIMESTRAL | PIBI MÚSICA | ABRIL – JUNHO</h1>
-  <h2>Primeira Igreja Batista de Itaporanga-PB</h2>
 
-  <div id="apresentacao">
-    Somos o Ministério de Louvor da Primeira Igreja Batista de Itaporanga-PB, e este espaço foi criado para facilitar o acesso ao nosso repertório de músicas.<br><br>
-    Aqui você encontrará as canções que serão ministradas durante o trimestre de abril a junho, com todas as informações necessárias como tonalidade, responsáveis, e links para ensaios ou versões de referência.<br><br>
-    Use o campo de busca abaixo para localizar rapidamente qualquer música.
-  </div>
+  <div class="container">
+    <h1>REPERTÓRIOS DA PIBI · ABRIL A JUNHO</h1>
+    <div class="descricao">
+      Este site oferece uma busca pelo repertório musical ministrado na nossa igreja. Você pode pesquisar pelo nome da música, cantor, banda ou versão. Também é possível filtrar todo o repertório de um ministro específico pesquisando pelo seu nome. 
+      <a href="#">Clique aqui</a> para visualizar a nossa lista de ministros.<br><br>
+      Use a barra de pesquisa para encontrar exatamente o que precisa, seja uma música específica ou todo o repertório de canções ministradas por alguém. <em>(Se você estiver usando um dispositivo com tela pequena, deslize lateralmente para visualizar todo o conteúdo da pesquisa).</em>
+    </div>
 
-  <div id="busca-container">
-    <input type="text" id="busca" placeholder="Digite o nome da música...">
-    <button id="botao-busca">Buscar</button>
+    <div class="busca">
+      <input type="text" id="busca" placeholder="Digite o nome da música ou ministro...">
+      <br>
+      <button id="botao-busca">Buscar</button>
+    </div>
   </div>
 
   <div class="tabela-wrapper">
@@ -112,7 +142,7 @@
   </div>
 
   <script>
-    const sheetUrl = "https://docs.google.com/spreadsheets/d/e/2PACX-1vSvHeKJfAPpEYpsrieTFK5I_xcE-bBIpkGQRBmK-yrw1PBTZEblaxyUInsbDEPusum2R37hsHCunLir/pub?gid=0&single=true&output=csv";
+    const sheetUrl = "https://docs.google.com/spreadsheets/d/e/2PACX-1vT3nfCybgcT4p5fAFEV_YRn88r9R-bxatOi96UqXvI6CVb_QRc1hoVFz6YXhlafiX0lfZgTR4suVA93/pub?gid=0&single=true&output=csv";
 
     let todasAsMusicas = [];
     let colunas = [];
@@ -129,7 +159,9 @@
       const filtroNormalizado = normalizarTexto(filtro);
 
       const musicasFiltradas = todasAsMusicas.filter(item =>
-        normalizarTexto(item["MÚSICA"] || "").includes(filtroNormalizado)
+        colunas.some(coluna =>
+          normalizarTexto(item[coluna] || "").includes(filtroNormalizado)
+        )
       );
 
       tabela.style.display = musicasFiltradas.length > 0 ? "table" : "none";
@@ -140,7 +172,7 @@
         colunas.forEach(coluna => {
           const celula = document.createElement("td");
 
-          if (coluna === "LINK DO YOUTUBE" && item[coluna]) {
+          if (coluna.toLowerCase().includes("link") && item[coluna]) {
             const link = document.createElement("a");
             link.href = item[coluna];
             link.target = "_blank";
@@ -159,6 +191,7 @@
     }
 
     function inicializarTabela() {
+      document.getElementById("busca").value = ""; // Limpar campo ao carregar
       Papa.parse(sheetUrl, {
         download: true,
         header: true,
@@ -190,11 +223,8 @@
       }
     });
 
-    // Limpa o campo de busca ao carregar a página
-    window.addEventListener("DOMContentLoaded", () => {
-      document.getElementById("busca").value = "";
-      inicializarTabela();
-    });
+    inicializarTabela();
   </script>
+
 </body>
 </html>
