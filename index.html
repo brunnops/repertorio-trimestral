@@ -112,13 +112,20 @@
     }
 
     footer {
-      margin-top: 40px;
       background-color: #1976d2;
       color: white;
       text-align: center;
       padding: 16px 10px;
       font-size: 0.9rem;
       border-radius: 0 0 10px 10px;
+      background-color: #1E6C93; /* Fundo azul */
+      color: white; /* Texto branco */
+      padding: 5px 0;
+      width: 100%; /* Garante que o footer ocupe toda a largura */
+      position: relative; /* Posiciona o footer normalmente no fluxo da página */
+      margin-top: auto; /* Garante que o footer fique na parte inferior, mesmo com pouco conteúdo */
+      border-top-left-radius: 10px;
+      border-top-right-radius: 10px;
     }
 
     @media (max-width: 600px) {
@@ -131,13 +138,15 @@
 </head>
 <body>
   <header>
-    <h1>Repertórios da PIBI</h1>
+    <h1>Repertório Trimestral - PIBI MUSIC</h1>
   </header>
 
   <div class="container">
-    <p>Este site oferece uma busca pelo repertório musical ministrado na nossa igreja. Você pode pesquisar pelo nome da música, cantor, banda ou versão. Também é possível filtrar todo o repertório de um ministro específico pesquisando pelo seu nome. <strong><a href="#">Clique aqui</a></strong> para visualizar a nossa lista de ministros.</p>
+    <p>Somos o Ministério de Louvor da Primeira Igreja Batista de Itaporanga-PB, e este espaço foi criado para facilitar o acesso ao nosso repertório de músicas.</p>
 
-    <p>Use a barra de pesquisa para encontrar exatamente o que precisa, seja uma música específica ou todo o repertório de canções ministradas por alguém. <em>(se você estiver usando um dispositivo com tela pequena, deslize lateralmente para visualizar todo o conteúdo da pesquisa).</em></p>
+    <p>Aqui você encontrará as canções que serão ministradas durante o trimestre de abril a junho, com todas as informações necessárias como tonalidades, ministros, links do YouTube para as versões de referência, etc.. <em>(se você estiver usando um dispositivo com tela pequena, deslize lateralmente para visualizar todo o conteúdo da pesquisa).</em></p>
+
+    <p>Use o campo de busca abaixo para localizar rapidamente qualquer música.</p><br>
 
     <div class="busca-wrapper">
       <input type="text" id="busca" placeholder="Digite aqui para pesquisar...">
