@@ -7,8 +7,11 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
   <link id="favicon-light" rel="shortcut icon" href="pibilogolight.png" type="image/png" sizes="32x32" media="(prefers-color-scheme: dark)">
   <link id="favicon-dark" rel="shortcut icon" href="pibilogodark.png" type="image/png" sizes="32x32" media="(prefers-color-scheme: light)">
-
   <style>
+    * {
+      box-sizing: border-box;
+    }
+
     body {
       font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
       background-color: #f4f4f4;
@@ -16,29 +19,30 @@
       padding: 20px;
     }
 
-    h1 {
+    h1, h2 {
       text-align: center;
-      font-size: 2rem;
+      margin: 0;
+    }
+
+    h1 {
+      font-size: 1.8rem;
+      font-weight: 700;
       margin-bottom: 5px;
-      font-weight: 600;
     }
 
     h2 {
-      text-align: center;
-      font-weight: 400;
-      font-size: 1.2rem;
-      margin-top: 5px;
-      margin-bottom: 30px;
+      font-size: 1rem;
       color: #555;
+      margin-bottom: 30px;
     }
 
     #intro-container {
-      background: #ffffff;
-      padding: 40px 30px;
+      background: #fff;
+      padding: 30px 20px;
       border-radius: 20px;
       box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
       border: 1px solid #ddd;
-      max-width: 480px;
+      max-width: 600px;
       margin: 0 auto 40px auto;
       text-align: center;
     }
@@ -48,8 +52,22 @@
       line-height: 1.6;
       text-align: justify;
       text-indent: 2em;
-      margin-bottom: 1em;
-      margin-top: 0px;
+      margin: 0 0 1em;
+    }
+
+    .busca-container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 10px;
+      margin-top: 20px;
+    }
+
+    @media (min-width: 480px) {
+      .busca-container {
+        flex-direction: row;
+        justify-content: center;
+      }
     }
 
     #busca {
@@ -68,7 +86,6 @@
     #botao-busca {
       padding: 6px 16px;
       font-size: 1rem;
-      margin-left: 10px;
       cursor: pointer;
       border: none;
       background-color: #0077cc;
@@ -88,11 +105,9 @@
       overflow-y: auto;
       overflow-x: auto;
       margin: 40px auto;
-      padding: 10px;
       border-radius: 12px;
       background: transparent;
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
-      border: 1px solid #ddd;
+      border: 1px solid transparent;
     }
 
     table {
@@ -121,6 +136,11 @@
       color: #0066cc;
       text-decoration: underline;
     }
+
+    a.link-musica img {
+      vertical-align: middle;
+      margin-right: 6px;
+    }
   </style>
 </head>
 <body>
@@ -131,11 +151,13 @@
     <div id="apresentacao">
       <p>Somos o Ministério de Louvor da Primeira Igreja Batista de Itaporanga-PB, e este espaço foi criado para facilitar o acesso ao nosso repertório de músicas.</p>
       <p>Aqui você encontrará as canções que serão ministradas durante o trimestre de abril a junho, com todas as informações necessárias como tonalidades, ministros, links do YouTube para as versões de referência, etc.</p>
-      <p>Use o campo de busca abaixo para localizar rapidamente qualquer música.</p><br>
+      <p>Use o campo de busca abaixo para localizar rapidamente qualquer música.</p>
     </div>
 
-    <input type="text" id="busca" placeholder="Digite o nome da música...">
-    <button id="botao-busca">Buscar</button>
+    <div class="busca-container">
+      <input type="text" id="busca" placeholder="Digite o nome da música...">
+      <button id="botao-busca">Buscar</button>
+    </div>
   </div>
 
   <div class="tabela-wrapper">
@@ -154,7 +176,7 @@
     let colunas = [];
 
     function normalizarTexto(texto) {
-      return texto.normalize("NFD").replace(/[̀-ͯ]/g, "").toLowerCase();
+      return texto.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase();
     }
 
     function exibirMusicas(filtro = "") {
@@ -175,25 +197,22 @@
 
         colunas.forEach(coluna => {
           const celula = document.createElement("td");
-          
-        if (coluna === "LINK DO YOUTUBE (VERSÃO)" && item[coluna]) {
-        const link = document.createElement("a");
-        link.href = item[coluna];
-        link.target = "_blank";
-        link.className = "link-musica";
 
-        // YouTube SVG ícone
-        const icon = document.createElement("img");
-        icon.src = "https://www.svgrepo.com/show/13671/youtube.svg";
-        icon.alt = "YouTube";
-        icon.style.width = "16px";
-        icon.style.height = "16px";
-        icon.style.verticalAlign = "middle";
-        icon.style.marginRight = "6px";
+          if (coluna === "LINK DO YOUTUBE (VERSÃO)" && item[coluna]) {
+            const link = document.createElement("a");
+            link.href = item[coluna];
+            link.target = "_blank";
+            link.className = "link-musica";
 
-        link.appendChild(icon);
-        link.appendChild(document.createTextNode(item["MÚSICA"] || "Ver vídeo"));
-        celula.appendChild(link);
+            const icon = document.createElement("img");
+            icon.src = "https://www.svgrepo.com/show/13671/youtube.svg";
+            icon.alt = "YouTube";
+            icon.style.width = "16px";
+            icon.style.height = "16px";
+
+            link.appendChild(icon);
+            link.appendChild(document.createTextNode(" " + (item["MÚSICA"] || "Ver vídeo")));
+            celula.appendChild(link);
           } else {
             celula.textContent = item[coluna] || "-";
           }
