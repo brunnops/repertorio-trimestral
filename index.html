@@ -2,92 +2,114 @@
 <html lang="pt-BR">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Repertório Trimestral</title>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
   <style>
-    body {
-      font-family: 'Inter', sans-serif;
-      background-color: #1e1e1e;
-      color: #333;
+    :root {
+      --cor-primaria: #1976d2;
+      --cor-escura: #1e1e1e;
+      --branco: #ffffff;
+      --cinza-claro: #f9f9f9;
+      --cinza-medio: #ccc;
+    }
+
+    * {
+      box-sizing: border-box;
       margin: 0;
       padding: 0;
     }
 
+    body {
+      font-family: 'Inter', sans-serif;
+      background-color: var(--cor-escura);
+      color: var(--cor-escura);
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+    }
+
     header {
-      padding: 40px 20px 20px;
+      padding: 2rem 1rem 1rem;
       text-align: center;
-      color: #054b73;
+      color: var(--cor-primaria);
     }
 
     header h1 {
       font-size: 1.8rem;
       font-weight: 600;
-      margin-bottom: 10px;
+    }
+
+    main {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 1rem;
     }
 
     .container {
-      max-width: 800px;
-      margin: 0 auto;
-      background-color: #fff;
-      border-radius: 10px;
-      padding: 30px;
-      box-shadow: 0 0 20px rgba(0, 0, 0, 0.2);
+      width: 100%;
+      max-width: 860px;
+      background-color: var(--branco);
+      padding: 2rem;
+      border-radius: 12px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
     }
 
     p {
       font-size: 1rem;
       line-height: 1.6;
+      margin-bottom: 1rem;
       text-align: justify;
-      margin-bottom: 20px;
     }
 
     .busca-wrapper {
       display: flex;
       flex-direction: column;
-      gap: 10px;
+      gap: 0.5rem;
+      margin-top: 1rem;
     }
 
-    #busca {
-      padding: 12px;
+    input#busca {
+      padding: 0.75rem;
       font-size: 1rem;
+      border: 1px solid var(--cinza-medio);
       border-radius: 6px;
-      border: 1px solid #ccc;
     }
 
-    #botao-busca {
-      padding: 12px;
+    button#botao-busca {
+      padding: 0.75rem;
       font-size: 1rem;
       border: none;
-      background-color: #1976d2;
-      color: white;
+      background-color: var(--cor-primaria);
+      color: var(--branco);
       border-radius: 6px;
       cursor: pointer;
-      transition: background-color 0.3s;
+      transition: background-color 0.3s ease;
     }
 
-    #botao-busca:hover {
+    button#botao-busca:hover {
       background-color: #125ba1;
     }
 
     .tabela-wrapper {
-      max-width: 100%;
+      margin-top: 2rem;
       overflow-x: auto;
-      margin-top: 30px;
       display: none;
     }
 
     table {
       width: 100%;
       border-collapse: collapse;
-      font-size: 0.95rem;
       min-width: 600px;
+      font-size: 0.95rem;
     }
 
     th, td {
-      padding: 10px;
       border: 1px solid #ddd;
+      padding: 0.75rem;
       text-align: left;
     }
 
@@ -96,15 +118,15 @@
     }
 
     tr:nth-child(even) {
-      background-color: #fafafa;
+      background-color: var(--cinza-claro);
     }
 
     a.link-musica {
-      color: #1976d2;
-      text-decoration: none;
       display: flex;
       align-items: center;
       gap: 6px;
+      color: var(--cor-primaria);
+      text-decoration: none;
     }
 
     a.link-musica:hover {
@@ -112,26 +134,26 @@
     }
 
     footer {
-      background-color: #1976d2;
-      color: white;
+      background-color: var(--cor-primaria);
+      color: var(--branco);
       text-align: center;
-      padding: 16px 10px;
+      padding: 1rem 0;
       font-size: 0.9rem;
-      border-radius: 0 0 10px 10px;
-      background-color: #1E6C93; /* Fundo azul */
-      color: white; /* Texto branco */
-      padding: 5px 0;
-      width: 100%; /* Garante que o footer ocupe toda a largura */
-      position: relative; /* Posiciona o footer normalmente no fluxo da página */
-      margin-top: auto; /* Garante que o footer fique na parte inferior, mesmo com pouco conteúdo */
-      border-top-left-radius: 10px;
-      border-top-right-radius: 10px;
+      margin-top: 2rem;
     }
 
     @media (max-width: 600px) {
+      header h1 {
+        font-size: 1.4rem;
+      }
+
       .container {
-        padding: 20px;
-        margin: 10px;
+        padding: 1.5rem;
+      }
+
+      table {
+        font-size: 0.85rem;
+        min-width: unset;
       }
     }
   </style>
@@ -141,27 +163,25 @@
     <h1>Repertório Trimestral - PIBI MUSIC</h1>
   </header>
 
-  <div class="container">
-    <p>Somos o Ministério de Louvor da Primeira Igreja Batista de Itaporanga-PB, e este espaço foi criado para facilitar o acesso ao nosso repertório de músicas.</p>
+  <main>
+    <div class="container">
+      <p>Somos o Ministério de Louvor da Primeira Igreja Batista de Itaporanga-PB, e este espaço foi criado para facilitar o acesso ao nosso repertório de músicas.</p>
+      <p>Aqui você encontrará as canções que serão ministradas durante o trimestre de abril a junho, com todas as informações necessárias como tonalidades, ministros, links do YouTube para as versões de referência, etc. <em>(se você estiver usando um dispositivo com tela pequena, deslize lateralmente para visualizar todo o conteúdo da pesquisa).</em></p>
+      <p>Use o campo de busca abaixo para localizar rapidamente qualquer música.</p>
 
-    <p>Aqui você encontrará as canções que serão ministradas durante o trimestre de abril a junho, com todas as informações necessárias como tonalidades, ministros, links do YouTube para as versões de referência, etc.. <em>(se você estiver usando um dispositivo com tela pequena, deslize lateralmente para visualizar todo o conteúdo da pesquisa).</em></p>
+      <div class="busca-wrapper">
+        <input type="text" id="busca" placeholder="Digite aqui para pesquisar...">
+        <button id="botao-busca">Buscar</button>
+      </div>
 
-    <p>Use o campo de busca abaixo para localizar rapidamente qualquer música.</p><br>
-
-    <div class="busca-wrapper">
-      <input type="text" id="busca" placeholder="Digite aqui para pesquisar...">
-      <button id="botao-busca">Buscar</button>
+      <div class="tabela-wrapper">
+        <table id="tabela-musicas">
+          <thead><tr id="cabecalho"></tr></thead>
+          <tbody id="musicas"></tbody>
+        </table>
+      </div>
     </div>
-
-    <div class="tabela-wrapper">
-      <table id="tabela-musicas">
-        <thead>
-          <tr id="cabecalho"></tr>
-        </thead>
-        <tbody id="musicas"></tbody>
-      </table>
-    </div>
-  </div>
+  </main>
 
   <footer>
     "Todo ser que respira louve ao Senhor. Aleluia!" Salmos 150:6
@@ -183,7 +203,6 @@
       corpoTabela.innerHTML = "";
 
       const filtroNormalizado = normalizarTexto(filtro);
-
       const musicasFiltradas = todasAsMusicas.filter(item =>
         normalizarTexto(item["MÚSICA"] || "").includes(filtroNormalizado)
       );
@@ -192,32 +211,26 @@
 
       musicasFiltradas.forEach(item => {
         const linha = document.createElement("tr");
-
         colunas.forEach(coluna => {
           const celula = document.createElement("td");
-
           if (coluna === "LINK DO YOUTUBE (VERSÃO)" && item[coluna]) {
             const link = document.createElement("a");
             link.href = item[coluna];
             link.target = "_blank";
             link.className = "link-musica";
-
             const icon = document.createElement("img");
             icon.src = "https://www.svgrepo.com/show/13671/youtube.svg";
             icon.alt = "YouTube";
             icon.style.width = "16px";
             icon.style.height = "16px";
-
             link.appendChild(icon);
             link.appendChild(document.createTextNode(item["MÚSICA"] || "Ver vídeo"));
             celula.appendChild(link);
           } else {
             celula.textContent = item[coluna] || "-";
           }
-
           linha.appendChild(celula);
         });
-
         corpoTabela.appendChild(linha);
       });
     }
@@ -229,10 +242,8 @@
         complete: function(results) {
           todasAsMusicas = results.data;
           colunas = results.meta.fields;
-
           const cabecalho = document.getElementById("cabecalho");
           cabecalho.innerHTML = "";
-
           colunas.forEach(coluna => {
             const th = document.createElement("th");
             th.textContent = coluna;
