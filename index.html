@@ -5,122 +5,89 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Repertório Trimestral</title>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
-  <link id="favicon-light" rel="shortcut icon" href="pibilogolight.png" type="image/png" sizes="32x32" media="(prefers-color-scheme: dark)">
-  <link id="favicon-dark" rel="shortcut icon" href="pibilogodark.png" type="image/png" sizes="32x32" media="(prefers-color-scheme: light)">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
   <style>
-    * {
-      box-sizing: border-box;
-    }
-
     body {
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      background-color: #f4f4f4;
+      font-family: 'Inter', sans-serif;
+      background-color: #1e1e1e;
+      color: #333;
       margin: 0;
-      padding: 20px;
+      padding: 0;
     }
 
-    h1, h2 {
+    header {
+      padding: 40px 20px 20px;
       text-align: center;
-      margin: 0;
+      color: #054b73;
     }
 
-    h1 {
+    header h1 {
       font-size: 1.8rem;
-      font-weight: 700;
-      margin-bottom: 5px;
+      font-weight: 600;
+      margin-bottom: 10px;
     }
 
-    h2 {
-      font-size: 1rem;
-      color: #555;
-      margin-bottom: 30px;
+    .container {
+      max-width: 800px;
+      margin: 0 auto;
+      background-color: #fff;
+      border-radius: 10px;
+      padding: 30px;
+      box-shadow: 0 0 20px rgba(0, 0, 0, 0.2);
     }
 
-    #intro-container {
-      background: #fff;
-      padding: 30px 20px;
-      border-radius: 20px;
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
-      border: 1px solid #ddd;
-      max-width: 600px;
-      margin: 0 auto 40px auto;
-      text-align: center;
-    }
-
-    #apresentacao p {
+    p {
       font-size: 1rem;
       line-height: 1.6;
       text-align: justify;
-      text-indent: 2em;
-      margin: 0 0 1em;
+      margin-bottom: 20px;
     }
 
-    .busca-container {
+    .busca-wrapper {
       display: flex;
       flex-direction: column;
-      align-items: center;
       gap: 10px;
-      margin-top: 20px;
-    }
-
-    @media (min-width: 480px) {
-      .busca-container {
-        flex-direction: row;
-        justify-content: center;
-      }
     }
 
     #busca {
-      width: 100%;
-      max-width: 240px;
-      padding: 6px;
+      padding: 12px;
       font-size: 1rem;
-      border-radius: 8px;
+      border-radius: 6px;
       border: 1px solid #ccc;
     }
 
-    #busca::placeholder {
-      color: #aaa;
-    }
-
     #botao-busca {
-      padding: 6px 16px;
+      padding: 12px;
       font-size: 1rem;
-      cursor: pointer;
       border: none;
-      background-color: #0077cc;
+      background-color: #1976d2;
       color: white;
       border-radius: 6px;
+      cursor: pointer;
       transition: background-color 0.3s;
     }
 
     #botao-busca:hover {
-      background-color: #005fa3;
+      background-color: #125ba1;
     }
 
     .tabela-wrapper {
-      display: none;
       max-width: 100%;
-      max-height: 400px;
-      overflow-y: auto;
       overflow-x: auto;
-      margin: 40px auto;
-      border-radius: 12px;
-      background: transparent;
-      border: 1px solid transparent;
+      margin-top: 30px;
+      display: none;
     }
 
     table {
       width: 100%;
       border-collapse: collapse;
-      background-color: #fff;
-      font-size: 0.85rem;
-      white-space: nowrap;
+      font-size: 0.95rem;
+      min-width: 600px;
     }
 
     th, td {
-      border: 1px solid #ddd;
       padding: 10px;
+      border: 1px solid #ddd;
       text-align: left;
     }
 
@@ -129,45 +96,67 @@
     }
 
     tr:nth-child(even) {
-      background-color: #f9f9f9;
+      background-color: #fafafa;
     }
 
     a.link-musica {
-      color: #0066cc;
+      color: #1976d2;
+      text-decoration: none;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    a.link-musica:hover {
       text-decoration: underline;
     }
 
-    a.link-musica img {
-      vertical-align: middle;
-      margin-right: 6px;
+    footer {
+      margin-top: 40px;
+      background-color: #1976d2;
+      color: white;
+      text-align: center;
+      padding: 16px 10px;
+      font-size: 0.9rem;
+      border-radius: 0 0 10px 10px;
+    }
+
+    @media (max-width: 600px) {
+      .container {
+        padding: 20px;
+        margin: 10px;
+      }
     }
   </style>
 </head>
 <body>
-  <h1>REPERTÓRIO TRIMESTRAL | PIBI MÚSICA | ABRIL – JUNHO</h1>
-  <h2>Primeira Igreja Batista de Itaporanga-PB</h2>
+  <header>
+    <h1>Repertórios da PIBI</h1>
+  </header>
 
-  <div id="intro-container">
-    <div id="apresentacao">
-      <p>Somos o Ministério de Louvor da Primeira Igreja Batista de Itaporanga-PB, e este espaço foi criado para facilitar o acesso ao nosso repertório de músicas.</p>
-      <p>Aqui você encontrará as canções que serão ministradas durante o trimestre de abril a junho, com todas as informações necessárias como tonalidades, ministros, links do YouTube para as versões de referência, etc.</p>
-      <p>Use o campo de busca abaixo para localizar rapidamente qualquer música.</p>
-    </div>
+  <div class="container">
+    <p>Este site oferece uma busca pelo repertório musical ministrado na nossa igreja. Você pode pesquisar pelo nome da música, cantor, banda ou versão. Também é possível filtrar todo o repertório de um ministro específico pesquisando pelo seu nome. <strong><a href="#">Clique aqui</a></strong> para visualizar a nossa lista de ministros.</p>
 
-    <div class="busca-container">
-      <input type="text" id="busca" placeholder="Digite o nome da música...">
+    <p>Use a barra de pesquisa para encontrar exatamente o que precisa, seja uma música específica ou todo o repertório de canções ministradas por alguém. <em>(se você estiver usando um dispositivo com tela pequena, deslize lateralmente para visualizar todo o conteúdo da pesquisa).</em></p>
+
+    <div class="busca-wrapper">
+      <input type="text" id="busca" placeholder="Digite aqui para pesquisar...">
       <button id="botao-busca">Buscar</button>
     </div>
+
+    <div class="tabela-wrapper">
+      <table id="tabela-musicas">
+        <thead>
+          <tr id="cabecalho"></tr>
+        </thead>
+        <tbody id="musicas"></tbody>
+      </table>
+    </div>
   </div>
 
-  <div class="tabela-wrapper">
-    <table id="tabela-musicas">
-      <thead>
-        <tr id="cabecalho"></tr>
-      </thead>
-      <tbody id="musicas"></tbody>
-    </table>
-  </div>
+  <footer>
+    "Todo ser que respira louve ao Senhor. Aleluia!" Salmos 150:6
+  </footer>
 
   <script>
     const sheetUrl = "https://docs.google.com/spreadsheets/d/e/2PACX-1vSvHeKJfAPpEYpsrieTFK5I_xcE-bBIpkGQRBmK-yrw1PBTZEblaxyUInsbDEPusum2R37hsHCunLir/pub?gid=0&single=true&output=csv";
@@ -211,7 +200,7 @@
             icon.style.height = "16px";
 
             link.appendChild(icon);
-            link.appendChild(document.createTextNode(" " + (item["MÚSICA"] || "Ver vídeo")));
+            link.appendChild(document.createTextNode(item["MÚSICA"] || "Ver vídeo"));
             celula.appendChild(link);
           } else {
             celula.textContent = item[coluna] || "-";
